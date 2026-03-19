@@ -29,6 +29,7 @@ export async function GET(
     return {
       path: file.path,
       type: file.type,
+      target: file.target,
       content,
     };
   });

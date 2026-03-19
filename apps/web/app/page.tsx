@@ -1,5 +1,7 @@
 import { getAllRegistryItems } from '@/lib/registry';
 
+const REGISTRY_URL = process.env.NEXT_PUBLIC_REGISTRY_URL;
+
 export default function Home() {
   const items = getAllRegistryItems();
 
@@ -31,7 +33,7 @@ export default function Home() {
             <p className="text-muted-foreground mb-4 text-sm">{item.description}</p>
             <div className="bg-muted rounded-md p-3">
               <code className="text-sm">
-                npx shadcn@latest add &quot;http://localhost:3000/r/{item.name}&quot;
+                npx shadcn@latest add &quot;{REGISTRY_URL}/r/{item.name}&quot;
               </code>
             </div>
             <div className="mt-3 text-xs">

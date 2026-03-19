@@ -15,7 +15,7 @@ import {
   IconSeparator,
   IconTextCaption,
 } from '@tabler/icons-react';
-import type { FormFieldType } from '@/lib/form-builder-types/types';
+import type { FormFieldType } from '@/registry/form-builder-types/types';
 
 type FieldTypeMeta = {
   label: string;

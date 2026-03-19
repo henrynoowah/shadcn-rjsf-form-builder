@@ -1,6 +1,6 @@
 import { useFormBuilder } from './builder-context';
-import type { LocalizedString, FormFieldOption } from '@/lib/form-builder-types/types';
-import { FormFieldType, isDisplayField } from '@/lib/form-builder-types/types';
+import type { LocalizedString, FormFieldOption } from '@/registry/form-builder-types/types';
+import { FormFieldType, isDisplayField } from '@/registry/form-builder-types/types';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -30,7 +30,7 @@ const LocalizedInput = ({
   placeholder?: string;
 }) => {
   const locales = availableLocales ?? [locale];
-  const current = value ?? {};
+  const current: Record<string, string> = typeof value === 'string' ? { [locale]: value } : (value ?? {});
 
   return (
     <div className="space-y-1">

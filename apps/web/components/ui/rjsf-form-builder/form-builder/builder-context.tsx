@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer, useCallback, type ReactNode } from 'react';
 import { nanoid } from 'nanoid';
-import type { FormSchema, FormFieldDefinition, FormFieldType } from '@/lib/form-builder-types/types';
+import type { FormSchema, FormFieldDefinition, FormFieldType } from '@/registry/form-builder-types/types';
 import { FIELD_TYPE_META } from './field-palette';
 
 type BuilderState = {

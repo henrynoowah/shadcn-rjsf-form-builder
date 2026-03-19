@@ -30,7 +30,7 @@ const LocalizedInput = ({
   placeholder?: string;
 }) => {
   const locales = availableLocales ?? [locale];
-  const current = value ?? {};
+  const current: Record<string, string> = typeof value === 'string' ? { [locale]: value } : (value ?? {});
 
   return (
     <div className="space-y-1">

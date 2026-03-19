@@ -1,8 +1,9 @@
 /**
- * Locale-keyed string for i18n support.
+ * A plain string or a locale-keyed map for i18n support.
+ * @example "Name"
  * @example { "en-US": "Name", "ko-KR": "이름" }
  */
-export type LocalizedString = Record<string, string>;
+export type LocalizedString = string | Record<string, string>;
 
 export const FormFieldType = {
   TEXT: 'text',

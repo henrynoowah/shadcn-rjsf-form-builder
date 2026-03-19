@@ -1,4 +1,4 @@
-export type LocalizedString = Record<string, string>;
+export type LocalizedString = string | Record<string, string>;
 
 export const FormFieldType = {
   TEXT: 'text',

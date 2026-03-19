@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ name: string }> }
 ) {
   const { name } = await params;
-  const item = getRegistryItem(name);
+  const item = getRegistryItem(name.replace(/\.json$/, ''));
 
   if (!item) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });

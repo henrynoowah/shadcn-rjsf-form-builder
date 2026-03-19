@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { getRegistryItem } from '@/lib/registry';
+import { getRegistryItem, getAllRegistryItems } from '@/lib/registry';
 
 export async function GET(
   request: Request,
@@ -15,9 +15,12 @@ export async function GET(
   }
 
   const { origin } = new URL(request.url);
-  const registryDependencies = (item.registryDependencies ?? []).map((dep) =>
-    dep.startsWith('http') ? dep : `${origin}/r/${dep}.json`
-  );
+  const localNames = new Set(getAllRegistryItems().map((i) => i.name));
+  const registryDependencies = (item.registryDependencies ?? []).map((dep) => {
+    if (dep.startsWith('http')) return dep;
+    // Only rewrite deps that live in this registry; leave official shadcn names as-is
+    return localNames.has(dep) ? `${origin}/r/${dep}.json` : dep;
+  });
 
   const files = item.files.map((file) => {
     const relativePath = file.path.replace('registry/', '');

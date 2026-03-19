@@ -5,10 +5,10 @@ import { useState } from 'react';
 type Tab = 'code' | 'preview';
 
 export default function ExampleBlock({
-  code,
+  codeHtml,
   children,
 }: {
-  code: string;
+  codeHtml: string;
   children: React.ReactNode;
 }) {
   const [tab, setTab] = useState<Tab>('code');
@@ -34,7 +34,11 @@ export default function ExampleBlock({
 
       {/* Content */}
       {tab === 'code' ? (
-        <pre className="bg-muted p-4 text-xs font-mono overflow-x-auto leading-relaxed">{code}</pre>
+        <div
+          className="shiki-wrapper overflow-x-auto text-xs [&_.shiki]:!rounded-none [&_.shiki]:p-4"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: codeHtml }}
+        />
       ) : (
         <div className="p-6">{children}</div>
       )}

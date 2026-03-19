@@ -1,4 +1,6 @@
-export default function SchemaReferencePage() {
+import CodeBlock from '../_components/code-block';
+
+export default async function SchemaReferencePage() {
   return (
     <div className="space-y-12">
       {/* Page header */}
@@ -12,7 +14,7 @@ export default function SchemaReferencePage() {
 
       {/* FormSchema */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-4">FormSchema</h2>
+        <h2 id="formschema" className="text-xl font-semibold border-b border-border pb-2 mb-4">FormSchema</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           The root object passed to <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormRenderer</code> and
           emitted by <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormBuilder</code>.
@@ -71,7 +73,7 @@ export default function SchemaReferencePage() {
 
       {/* FormFieldDefinition */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-4">FormFieldDefinition</h2>
+        <h2 id="formfielddefinition" className="text-xl font-semibold border-b border-border pb-2 mb-4">FormFieldDefinition</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           Defines a single field in the form. Each entry in <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormSchema.fields</code> conforms to this type.
         </p>
@@ -159,7 +161,7 @@ export default function SchemaReferencePage() {
 
       {/* Field Types */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-4">Field Types</h2>
+        <h2 id="field-types" className="text-xl font-semibold border-b border-border pb-2 mb-4">Field Types</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           All 13 supported field types, their JSON Schema mapping, and notes on behavior.
         </p>
@@ -262,17 +264,17 @@ export default function SchemaReferencePage() {
 
       {/* LocalizedString */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-4">LocalizedString</h2>
+        <h2 id="localizedstring" className="text-xl font-semibold border-b border-border pb-2 mb-4">LocalizedString</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">LocalizedString</code> is{' '}
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">string | Record&lt;string, string&gt;</code>.
           Use a plain string for single-language forms; use a locale map for multi-language forms.
         </p>
-        <pre className="bg-muted rounded-md p-4 text-xs font-mono overflow-x-auto mb-4">{`// Plain string — always displayed as-is
+        <CodeBlock code={`// Plain string — always displayed as-is
 label: "Full Name"
 
 // Locale map — resolved at render time using the locale prop
-label: { "en-US": "Full Name", "ko-KR": "이름", "ja-JP": "氏名" }`}</pre>
+label: { "en-US": "Full Name", "ko-KR": "이름", "ja-JP": "氏名" }`} />
         <p className="text-sm text-muted-foreground leading-relaxed">
           Resolution order: <strong className="text-foreground">active locale</strong> →{' '}
           <strong className="text-foreground">baseLocale</strong> → first available key → empty string.
@@ -281,7 +283,7 @@ label: { "en-US": "Full Name", "ko-KR": "이름", "ja-JP": "氏名" }`}</pre>
 
       {/* Validation */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-4">Validation</h2>
+        <h2 id="validation" className="text-xl font-semibold border-b border-border pb-2 mb-4">Validation</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           The <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">validation</code> field accepts a{' '}
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormFieldValidation</code> object.
@@ -341,7 +343,7 @@ label: { "en-US": "Full Name", "ko-KR": "이름", "ja-JP": "氏名" }`}</pre>
           Register a validator once (at app startup) and reference it by key in any field's{' '}
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">validation.customRule</code>.
         </p>
-        <pre className="bg-muted rounded-md p-4 text-xs font-mono overflow-x-auto">{`import { registerValidator, createCustomValidator } from '@/lib/form-builder-types/validation';
+        <CodeBlock code={`import { registerValidator, createCustomValidator } from '@/lib/form-builder-types/validation';
 
 // Register once (e.g. in a layout or provider)
 registerValidator('no-profanity', (value) => {
@@ -354,17 +356,17 @@ registerValidator('no-profanity', (value) => {
 <FormRenderer
   schema={schema}
   customValidate={createCustomValidator(schema)}
-/>`}</pre>
+/>`} />
       </section>
 
       {/* Conditions */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-4">Conditions</h2>
+        <h2 id="conditions" className="text-xl font-semibold border-b border-border pb-2 mb-4">Conditions</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           Set <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">condition</code> on a field to make it
           conditionally visible based on another field's current value.
         </p>
-        <pre className="bg-muted rounded-md p-4 text-xs font-mono overflow-x-auto mb-6">{`// Show "otherDetails" only when "topic" equals "other"
+        <CodeBlock lang="ts" code={`// Show "otherDetails" only when "topic" equals "other"
 {
   id: 'otherDetails',
   type: 'textarea',
@@ -375,7 +377,7 @@ registerValidator('no-profanity', (value) => {
     operator: 'eq',
     value: 'other',
   }
-}`}</pre>
+}`} />
         <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Operators</p>
         <div className="overflow-x-auto">
           <table className="w-full border border-border text-sm">
@@ -429,7 +431,7 @@ registerValidator('no-profanity', (value) => {
 
       {/* Settings */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-4">Settings</h2>
+        <h2 id="settings" className="text-xl font-semibold border-b border-border pb-2 mb-4">Settings</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormSchemaSettings</code> is an optional
           object on the root <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormSchema</code>.

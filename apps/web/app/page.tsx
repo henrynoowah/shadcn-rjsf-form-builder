@@ -1,5 +1,6 @@
 import { getAllRegistryItems } from '@/lib/registry';
-import CopyButton from './_components/copy-button';
+import InstallCard from './_components/install-card';
+import ThemeToggle from './_components/theme-toggle';
 
 const REGISTRY_URL = process.env.NEXT_PUBLIC_REGISTRY_URL;
 
@@ -35,13 +36,13 @@ const TYPE_LABELS: Record<string, string> = {
   'registry:ui': 'ui',
 };
 
-export default function Home() {
+export default async function Home() {
   const items = getAllRegistryItems();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
-      <nav className="border-b border-border px-6 py-4">
+      <nav className="sticky top-0 z-50 border-b border-border bg-background/80 px-6 py-4 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="font-mono text-sm font-semibold tracking-tight">shadcn-rjsf</span>
@@ -57,11 +58,12 @@ export default function Home() {
               Docs
             </a>
             <a
-              href="/demo"
+              href="/playground"
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
-              Demo
+              Playground
             </a>
+            <ThemeToggle />
             <a
               href="https://github.com/henrynoowah/shadcn-rjsf-form-builder"
               target="_blank"
@@ -107,7 +109,7 @@ export default function Home() {
 
           <div className="flex flex-wrap items-center gap-3">
             <a
-              href="/demo"
+              href="/playground"
               className="inline-flex items-center gap-2 rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-80"
             >
               View Demo
@@ -162,50 +164,16 @@ export default function Home() {
           </div>
 
           <div className="space-y-4">
-            {items.map((item) => {
-              const cmd = `npx shadcn@latest add "${REGISTRY_URL}/r/${item.name}"`;
-              return (
-                <div key={item.name} className="rounded-lg border border-border overflow-hidden">
-                  {/* Card header */}
-                  <div className="flex items-center justify-between border-b border-border px-5 py-3">
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono text-sm font-semibold">{item.name}</span>
-                      <span className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
-                        {TYPE_LABELS[item.type] ?? item.type}
-                      </span>
-                    </div>
-                    <span className="text-xs text-muted-foreground">
-                      {item.files.length} file{item.files.length !== 1 ? 's' : ''}
-                    </span>
-                  </div>
-
-                  {/* Description */}
-                  <div className="px-5 py-3">
-                    <p className="text-sm text-muted-foreground">{item.description}</p>
-                  </div>
-
-                  {/* Install command */}
-                  <div className="flex items-center gap-3 border-t border-border bg-muted/40 px-5 py-3">
-                    <code className="flex-1 font-mono text-xs break-all">{cmd}</code>
-                    <CopyButton text={cmd} />
-                  </div>
-
-                  {/* Dependencies */}
-                  {item.dependencies && item.dependencies.length > 0 && (
-                    <div className="border-t border-border px-5 py-2.5 flex flex-wrap gap-1.5">
-                      {item.dependencies.map((dep) => (
-                        <span
-                          key={dep}
-                          className="rounded bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground"
-                        >
-                          {dep}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {items.map((item) => (
+              <InstallCard
+                key={item.name}
+                name={item.name}
+                description={item.description ?? ''}
+                cmd={`npx shadcn@latest add "${REGISTRY_URL}/r/${item.name}"`}
+                typeBadge={TYPE_LABELS[item.type] ?? item.type}
+                dependencies={item.dependencies}
+              />
+            ))}
           </div>
         </div>
       </section>

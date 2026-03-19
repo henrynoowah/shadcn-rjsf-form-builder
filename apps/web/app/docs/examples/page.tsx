@@ -1,9 +1,18 @@
+import { codeToHtml } from 'shiki';
 import ExampleBlock from './_components/example-block';
 import ContactFormDemo from './_components/demos/contact-form-demo';
 import ConditionalDemo from './_components/demos/conditional-demo';
 import LocaleDemo from './_components/demos/locale-demo';
 import ValidationDemo from './_components/demos/validation-demo';
 import BuilderDemo from './_components/demos/builder-demo';
+
+async function highlight(code: string) {
+  return codeToHtml(code, {
+    lang: 'tsx',
+    themes: { light: 'nord', dark: 'github-dark-dimmed' },
+    defaultColor: false,
+  });
+}
 
 const CONTACT_FORM_CODE = `import { FormRenderer } from '@/components/form-renderer/form-renderer';
 import type { FormSchema } from '@/lib/form-builder-types/types';
@@ -244,7 +253,17 @@ export default function BuilderPage() {
   );
 }`;
 
-export default function ExamplesPage() {
+export default async function ExamplesPage() {
+  const [contactHtml, conditionalHtml, localeHtml, validationHtml, builderHtml] = await Promise.all(
+    [
+      highlight(CONTACT_FORM_CODE),
+      highlight(CONDITIONAL_CODE),
+      highlight(LOCALE_CODE),
+      highlight(VALIDATION_CODE),
+      highlight(BUILDER_CODE),
+    ]
+  );
+
   return (
     <div className="space-y-14">
       {/* Page header */}
@@ -259,48 +278,65 @@ export default function ExamplesPage() {
 
       {/* Contact Form */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-3">Contact Form</h2>
+        <h2 id="contact-form" className="text-xl font-semibold border-b border-border pb-2 mb-3">
+          Contact Form
+        </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           A realistic contact form with display fields (
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">heading</code>,{' '}
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">separator</code>),
           validation, and a checkbox. Display fields are excluded from the submitted data.
         </p>
-        <ExampleBlock code={CONTACT_FORM_CODE}>
+        <ExampleBlock codeHtml={contactHtml}>
           <ContactFormDemo />
         </ExampleBlock>
       </section>
 
       {/* Conditional Fields */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-3">Conditional Fields</h2>
+        <h2
+          id="conditional-fields"
+          className="text-xl font-semibold border-b border-border pb-2 mb-3"
+        >
+          Conditional Fields
+        </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           A field with a{' '}
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">condition</code> is
           hidden until the condition passes. Here, "Other details" only appears when the topic
           select is set to "other".
         </p>
-        <ExampleBlock code={CONDITIONAL_CODE}>
+        <ExampleBlock codeHtml={conditionalHtml}>
           <ConditionalDemo />
         </ExampleBlock>
       </section>
 
       {/* Multi-locale Form */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-3">Multi-locale Form</h2>
+        <h2
+          id="multi-locale-form"
+          className="text-xl font-semibold border-b border-border pb-2 mb-3"
+        >
+          Multi-locale Form
+        </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          Provide a locale map for every label, then switch the active locale at runtime.
-          The <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">baseLocale</code>{' '}
-          is used as a fallback when a translation is missing.
+          Provide a locale map for every label, then switch the active locale at runtime. The{' '}
+          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">baseLocale</code> is
+          used as a fallback when a translation is missing.
         </p>
-        <ExampleBlock code={LOCALE_CODE}>
+        <ExampleBlock codeHtml={localeHtml}>
           <LocaleDemo />
         </ExampleBlock>
       </section>
 
       {/* Custom Validation */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-3">Custom Validation</h2>
+        <h2
+          id="custom-validation"
+          className="text-xl font-semibold border-b border-border pb-2 mb-3"
+        >
+          Custom Validation
+        </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           Register a validator once at app startup. Reference it by key in any field's{' '}
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">
@@ -308,25 +344,27 @@ export default function ExamplesPage() {
           </code>
           . The validator receives the field's value and the full form data object.
         </p>
-        <ExampleBlock code={VALIDATION_CODE}>
+        <ExampleBlock codeHtml={validationHtml}>
           <ValidationDemo />
         </ExampleBlock>
       </section>
 
       {/* Controlled FormBuilder */}
       <section>
-        <h2 className="text-xl font-semibold border-b border-border pb-2 mb-3">
+        <h2
+          id="controlled-formbuilder"
+          className="text-xl font-semibold border-b border-border pb-2 mb-3"
+        >
           Controlled FormBuilder
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          Wire{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormBuilder</code>'s{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">onChange</code> into a{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormRenderer</code>{' '}
+          Wire <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormBuilder</code>
+          's <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">onChange</code> into
+          a <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormRenderer</code>{' '}
           for a live side-by-side preview. The builder is always the source of truth; the renderer
           is a read-only consumer.
         </p>
-        <ExampleBlock code={BUILDER_CODE}>
+        <ExampleBlock codeHtml={builderHtml}>
           <BuilderDemo />
         </ExampleBlock>
       </section>

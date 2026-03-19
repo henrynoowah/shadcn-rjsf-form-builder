@@ -2,11 +2,53 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import ThemeToggle from '../_components/theme-toggle';
 
-const NAV_ITEMS = [
-  { label: 'Get Started', href: '/docs' },
-  { label: 'Schema Reference', href: '/docs/schema' },
-  { label: 'Examples', href: '/docs/examples' },
+type Section = { label: string; hash: string };
+
+type NavItem = {
+  label: string;
+  href: string;
+  sections: Section[];
+};
+
+const NAV_ITEMS: NavItem[] = [
+  {
+    label: 'Get Started',
+    href: '/docs',
+    sections: [
+      { label: 'Overview', hash: 'overview' },
+      { label: 'Prerequisites', hash: 'prerequisites' },
+      { label: 'Installation', hash: 'installation' },
+      { label: 'Quick Start: FormRenderer', hash: 'quick-start-formrenderer' },
+      { label: 'Quick Start: FormBuilder', hash: 'quick-start-formbuilder' },
+      { label: 'Locale Setup', hash: 'locale-setup' },
+    ],
+  },
+  {
+    label: 'Schema Reference',
+    href: '/docs/schema',
+    sections: [
+      { label: 'FormSchema', hash: 'formschema' },
+      { label: 'FormFieldDefinition', hash: 'formfielddefinition' },
+      { label: 'Field Types', hash: 'field-types' },
+      { label: 'LocalizedString', hash: 'localizedstring' },
+      { label: 'Validation', hash: 'validation' },
+      { label: 'Conditions', hash: 'conditions' },
+      { label: 'Settings', hash: 'settings' },
+    ],
+  },
+  {
+    label: 'Examples',
+    href: '/docs/examples',
+    sections: [
+      { label: 'Contact Form', hash: 'contact-form' },
+      { label: 'Conditional Fields', hash: 'conditional-fields' },
+      { label: 'Multi-locale Form', hash: 'multi-locale-form' },
+      { label: 'Custom Validation', hash: 'custom-validation' },
+      { label: 'Controlled FormBuilder', hash: 'controlled-formbuilder' },
+    ],
+  },
 ];
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
@@ -15,7 +57,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Top nav */}
-      <nav className="border-b border-border px-6 py-4">
+      <nav className="sticky top-0 z-50 border-b border-border bg-background/80 px-6 py-4 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" className="font-mono text-sm font-semibold tracking-tight hover:opacity-80">
@@ -27,11 +69,12 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
           </div>
           <div className="flex items-center gap-6">
             <Link
-              href="/demo"
+              href="/playground"
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
-              Demo
+              Playground
             </Link>
+            <ThemeToggle />
             <a
               href="https://github.com/henrynoowah/shadcn-rjsf-form-builder"
               target="_blank"
@@ -57,17 +100,33 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             {NAV_ITEMS.map((item) => {
               const isActive = pathname === item.href;
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`block rounded-md px-3 py-2 text-sm transition-colors ${
-                    isActive
-                      ? 'bg-muted font-medium text-foreground'
-                      : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
-                  }`}
-                >
-                  {item.label}
-                </Link>
+                <div key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`block rounded-md px-3 py-2 text-sm transition-colors ${
+                      isActive
+                        ? 'bg-muted font-medium text-foreground'
+                        : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+
+                  {/* Section links — visible only on the active page */}
+                  {isActive && item.sections.length > 0 && (
+                    <div className="ml-3 mt-0.5 space-y-0.5 border-l border-border pl-3">
+                      {item.sections.map((section) => (
+                        <a
+                          key={section.hash}
+                          href={`#${section.hash}`}
+                          className="block py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                          {section.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </nav>

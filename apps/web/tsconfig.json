@@ -1,0 +1,31 @@
+{
+  "extends": "@repo/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@/lib/form-builder-types/*": [
+        "./registry/form-builder-types/*"
+      ],
+      "@/components/ui/form-renderer/*": [
+        "./registry/form-renderer/*"
+      ],
+      "@/components/ui/form-builder/*": [
+        "./registry/form-builder/*"
+      ]
+    },
+    "noEmit": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

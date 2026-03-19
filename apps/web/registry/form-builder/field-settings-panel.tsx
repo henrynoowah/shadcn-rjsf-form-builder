@@ -232,12 +232,31 @@ const ConditionEditor = ({
 };
 
 export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPanelProps) => {
-  const { selectedField, updateField } = useFormBuilder();
+  const { selectedField, updateField, state, updateSchema } = useFormBuilder();
+  const { schema } = state;
+
+  const submitLabelSection = (
+    <div className="border-sidebar-border border-t pt-4">
+      <h3 className="text-sidebar-foreground/60 mb-3 px-1 text-xs font-semibold uppercase tracking-wider">Form</h3>
+      <div>
+        <label className="mb-1 block text-xs font-medium">Submit Button Label</label>
+        <LocalizedInput
+          value={schema.submitLabel}
+          locale={locale}
+          availableLocales={availableLocales}
+          onChange={(submitLabel) => updateSchema({ submitLabel })}
+          placeholder="Submit"
+        />
+      </div>
+    </div>
+  );
 
   if (!selectedField) {
     return (
-      <div className="bg-sidebar text-sidebar-foreground/60 border-sidebar-border w-64 shrink-0 border-l p-4 text-center text-sm">
-        Select a field to edit its properties
+      <div className="bg-sidebar text-sidebar-foreground border-sidebar-border w-64 shrink-0 flex flex-col overflow-y-auto border-l p-3 gap-4">
+        <p className="text-sidebar-foreground/60 text-center text-sm mt-4">Select a field to edit its properties</p>
+        <div className="flex-1" />
+        {submitLabelSection}
       </div>
     );
   }
@@ -416,6 +435,8 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
           />
         </div>
       )}
+
+      {submitLabelSection}
     </div>
   );
 };

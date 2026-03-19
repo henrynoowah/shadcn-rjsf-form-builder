@@ -210,7 +210,7 @@ export const applyConditions = (schema: RJSFSchema, fields: FormFieldDefinition[
     allOf.push({
       if: ifSchema,
       then: { properties: { [field.id]: schema.properties?.[field.id] as RJSFSchema } },
-      else: { properties: { [field.id]: { type: 'null' } } },
+      else: {},
     });
   }
 

@@ -161,6 +161,16 @@ export const applyConditions = (schema: RJSFSchema, fields: FormFieldDefinition[
   const fieldsWithConditions = fields.filter((f) => f.condition);
   if (fieldsWithConditions.length === 0) return schema;
 
+  // Conditional fields must NOT live in top-level properties — otherwise RJSF always renders them.
+  // Remove them here and place them exclusively inside the allOf then-branch.
+  const conditionalIds = new Set(fieldsWithConditions.map((f) => f.id));
+  const filteredProperties: Record<string, RJSFSchema> = {};
+  for (const [key, value] of Object.entries(schema.properties ?? {})) {
+    if (!conditionalIds.has(key)) {
+      filteredProperties[key] = value as RJSFSchema;
+    }
+  }
+
   const allOf: RJSFSchema[] = [];
 
   for (const field of fieldsWithConditions) {
@@ -215,8 +225,8 @@ export const applyConditions = (schema: RJSFSchema, fields: FormFieldDefinition[
   }
 
   if (allOf.length > 0) {
-    return { ...schema, allOf };
+    return { ...schema, properties: filteredProperties, allOf };
   }
 
-  return schema;
+  return { ...schema, properties: filteredProperties };
 };

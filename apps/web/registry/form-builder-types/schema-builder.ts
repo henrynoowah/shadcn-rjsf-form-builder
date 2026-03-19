@@ -157,6 +157,28 @@ export const toUiSchema = (formSchema: FormSchema, locale: string, baseLocale?: 
   return uiSchema;
 };
 
+/**
+ * Evaluates a single field condition against current form data.
+ * Used by FormRenderer to filter visible fields before building the JSON schema.
+ */
+export const evaluateCondition = (
+  condition: FormFieldDefinition['condition'],
+  formData: Record<string, unknown>,
+): boolean => {
+  if (!condition) return true;
+  const value = formData[condition.field];
+  switch (condition.operator) {
+    case 'eq':       return value === condition.value;
+    case 'neq':      return value !== condition.value;
+    case 'gt':       return typeof value === 'number' && value > (condition.value as number);
+    case 'lt':       return typeof value === 'number' && value < (condition.value as number);
+    case 'contains': return typeof value === 'string' && value.includes(String(condition.value));
+    case 'empty':    return value === undefined || value === null || value === '';
+    case 'notEmpty': return value !== undefined && value !== null && value !== '';
+    default:         return true;
+  }
+};
+
 export const applyConditions = (schema: RJSFSchema, fields: FormFieldDefinition[]): RJSFSchema => {
   const fieldsWithConditions = fields.filter((f) => f.condition);
   if (fieldsWithConditions.length === 0) return schema;

@@ -1,5 +1,5 @@
 import { useFormBuilder } from './builder-context';
-import type { LocalizedString, FormFieldOption } from '@/lib/form-builder-types/types';
+import type { LocalizedString, FormFieldOption, FormFieldCondition, FormFieldConditionOperator } from '@/lib/form-builder-types/types';
 import { FormFieldType, isDisplayField } from '@/lib/form-builder-types/types';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -108,6 +108,125 @@ const OptionsEditor = ({
       >
         + Add Option
       </button>
+    </div>
+  );
+};
+
+const OPERATORS: { value: FormFieldConditionOperator; label: string; hasValue: boolean }[] = [
+  { value: 'eq',       label: 'equals',         hasValue: true  },
+  { value: 'neq',      label: 'not equals',     hasValue: true  },
+  { value: 'gt',       label: 'greater than',   hasValue: true  },
+  { value: 'lt',       label: 'less than',      hasValue: true  },
+  { value: 'contains', label: 'contains',       hasValue: true  },
+  { value: 'empty',    label: 'is empty',       hasValue: false },
+  { value: 'notEmpty', label: 'is not empty',   hasValue: false },
+];
+
+const ConditionEditor = ({
+  condition,
+  currentFieldId,
+  onChange,
+}: {
+  condition: FormFieldCondition | undefined;
+  currentFieldId: string;
+  onChange: (condition: FormFieldCondition | undefined) => void;
+}) => {
+  const { state } = useFormBuilder();
+
+  // All input fields except the current one (can't condition on itself or display fields)
+  const watchableFields = state.schema.fields.filter(
+    (f) => f.id !== currentFieldId && !isDisplayField(f.type),
+  );
+
+  const enabled = condition !== undefined;
+  const operator = condition?.operator ?? 'eq';
+  const needsValue = OPERATORS.find((o) => o.value === operator)?.hasValue ?? true;
+
+  const toggle = () => {
+    if (enabled) {
+      onChange(undefined);
+    } else {
+      const firstField = watchableFields[0];
+      if (firstField) {
+        onChange({ field: firstField.id, operator: 'eq', value: '' });
+      }
+    }
+  };
+
+  const update = (patch: Partial<FormFieldCondition>) => {
+    if (!condition) return;
+    onChange({ ...condition, ...patch });
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <Checkbox id="condition-enabled" checked={enabled} onCheckedChange={toggle} />
+        <label htmlFor="condition-enabled" className="text-xs">
+          Show only when…
+        </label>
+      </div>
+
+      {enabled && (
+        <div className="border-sidebar-border space-y-2 rounded-md border p-2">
+          {watchableFields.length === 0 ? (
+            <p className="text-sidebar-foreground/50 text-xs">
+              No other input fields to condition on.
+            </p>
+          ) : (
+            <>
+              {/* Field selector */}
+              <Select
+                value={condition?.field ?? ''}
+                onValueChange={(v) => update({ field: v })}
+              >
+                <SelectTrigger className="w-full text-xs">
+                  <SelectValue placeholder="Select field…" />
+                </SelectTrigger>
+                <SelectContent>
+                  {watchableFields.map((f) => {
+                    const label =
+                      typeof f.label === 'string'
+                        ? f.label
+                        : Object.values(f.label)[0] ?? f.id;
+                    return (
+                      <SelectItem key={f.id} value={f.id}>
+                        {label}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+
+              {/* Operator selector */}
+              <Select
+                value={operator}
+                onValueChange={(v) => update({ operator: v as FormFieldConditionOperator, value: undefined })}
+              >
+                <SelectTrigger className="w-full text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {OPERATORS.map((op) => (
+                    <SelectItem key={op.value} value={op.value}>
+                      {op.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Value input (hidden for empty / notEmpty) */}
+              {needsValue && (
+                <Input
+                  placeholder="Value…"
+                  value={condition?.value !== undefined ? String(condition.value) : ''}
+                  onChange={(e) => update({ value: e.target.value })}
+                />
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -284,6 +403,17 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
               </>
             )}
           </div>
+        </div>
+      )}
+
+      {!isDisplay && (
+        <div>
+          <label className="mb-1 block text-xs font-medium">Condition</label>
+          <ConditionEditor
+            condition={selectedField.condition}
+            currentFieldId={selectedField.id}
+            onChange={(condition) => updateField(selectedField.id, { condition })}
+          />
         </div>
       )}
     </div>

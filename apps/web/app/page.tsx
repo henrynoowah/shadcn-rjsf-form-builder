@@ -51,6 +51,12 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-6">
             <a
+              href="/docs"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Docs
+            </a>
+            <a
               href="/demo"
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >

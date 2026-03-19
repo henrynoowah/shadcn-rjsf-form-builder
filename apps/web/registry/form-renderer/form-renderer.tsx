@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { withTheme } from '@rjsf/core';
 import type { ThemeProps } from '@rjsf/core';
 import validator from '@rjsf/validator-ajv8';
 import type { IChangeEvent } from '@rjsf/core';
 import type { FormSchema } from '@/lib/form-builder-types/types';
-import { toJsonSchema, toUiSchema } from '@/lib/form-builder-types/schema-builder';
+import { toJsonSchema, toUiSchema, evaluateCondition } from '@/lib/form-builder-types/schema-builder';
 import { localizeString } from '@/lib/form-builder-types/i18n';
 import { formBuilderTheme } from './theme';
 
@@ -28,7 +28,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
   schema,
   locale,
   baseLocale,
-  formData,
+  formData: externalFormData,
   onChange,
   onSubmit,
   onError,
@@ -37,8 +37,16 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
   theme: themeOverride,
   submitButton,
 }) => {
-  const jsonSchema = useMemo(() => toJsonSchema(schema, locale, baseLocale), [schema, locale, baseLocale]);
-  const uiSchema = useMemo(() => toUiSchema(schema, locale, baseLocale), [schema, locale, baseLocale]);
+  // Track live form data so we can evaluate conditions and hide/show fields dynamically.
+  const [liveData, setLiveData] = useState<Record<string, unknown>>(externalFormData ?? {});
+
+  const visibleSchema = useMemo<FormSchema>(() => ({
+    ...schema,
+    fields: schema.fields.filter((f) => evaluateCondition(f.condition, liveData)),
+  }), [schema, liveData]);
+
+  const jsonSchema = useMemo(() => toJsonSchema(visibleSchema, locale, baseLocale), [visibleSchema, locale, baseLocale]);
+  const uiSchema = useMemo(() => toUiSchema(visibleSchema, locale, baseLocale), [visibleSchema, locale, baseLocale]);
   const submitLabel = localizeString(schema.submitLabel, locale, baseLocale) || 'Submit';
 
   const mergedTheme = useMemo<ThemeProps>(() => {
@@ -58,9 +66,12 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
         schema={jsonSchema}
         uiSchema={uiSchema}
         validator={validator}
-        formData={formData}
+        formData={externalFormData ?? liveData}
         disabled={disabled}
-        onChange={(e: IChangeEvent) => onChange?.(e.formData)}
+        onChange={(e: IChangeEvent) => {
+          setLiveData(e.formData);
+          onChange?.(e.formData);
+        }}
         onSubmit={(e: IChangeEvent) => onSubmit?.(e.formData)}
         onError={(errors: unknown[]) => onError?.(errors)}
       >

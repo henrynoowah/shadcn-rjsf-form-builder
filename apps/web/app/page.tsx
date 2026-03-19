@@ -10,6 +10,15 @@ export default function Home() {
         A shadcn registry for react-jsonschema-form components. Install any item with the shadcn CLI.
       </p>
 
+      <div className="mb-8">
+        <a
+          href="/demo"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
+          View Live Demo →
+        </a>
+      </div>
+
       <div className="space-y-6">
         {items.map((item) => (
           <div key={item.name} className="border-border rounded-lg border p-6">

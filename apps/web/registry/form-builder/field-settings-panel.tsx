@@ -5,6 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+/** Field types that support minLength/maxLength validation. Extend when adding new string-based types. */
+const STRING_LENGTH_TYPES = new Set<string>(['text', 'textarea', 'email', 'tel']);
+
+/** Field types that support min/max validation. Extend when adding new numeric types. */
+const NUMBER_RANGE_TYPES = new Set<string>(['number']);
+
 type FieldSettingsPanelProps = {
   locale: string;
   availableLocales?: string[];
@@ -209,7 +215,7 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
         <div>
           <label className="mb-1 block text-xs font-medium">Validation</label>
           <div className="space-y-2">
-            {(selectedField.type === 'text' || selectedField.type === 'textarea' || selectedField.type === 'email') && (
+            {STRING_LENGTH_TYPES.has(selectedField.type) && (
               <>
                 <div className="flex items-center gap-2">
                   <span className="w-20 shrink-0 text-xs">Min Length</span>
@@ -243,7 +249,7 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
                 </div>
               </>
             )}
-            {selectedField.type === 'number' && (
+            {NUMBER_RANGE_TYPES.has(selectedField.type) && (
               <>
                 <div className="flex items-center gap-2">
                   <span className="w-20 shrink-0 text-xs">Min</span>

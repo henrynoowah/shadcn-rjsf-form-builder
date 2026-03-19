@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer, useCallback, type ReactNode } from 'react';
 import { nanoid } from 'nanoid';
-import type { FormSchema, FormFieldDefinition, FormFieldType } from '@/registry/form-builder-types/types';
+import type { FormSchema, FormFieldDefinition, FormFieldType } from '@/lib/form-builder-types/types';
+import { FIELD_TYPE_META } from './field-palette';
 
 type BuilderState = {
   schema: FormSchema;
@@ -15,26 +16,10 @@ type BuilderAction =
   | { type: 'SELECT_FIELD'; payload: { fieldId: string | null } }
   | { type: 'UPDATE_SCHEMA'; payload: Partial<FormSchema> };
 
-const DEFAULT_FIELD_LABELS: Record<string, string> = {
-  text: 'Text Field',
-  number: 'Number Field',
-  email: 'Email Field',
-  tel: 'Phone Field',
-  select: 'Select Field',
-  checkbox: 'Checkbox',
-  radio: 'Radio Group',
-  date: 'Date Field',
-  textarea: 'Text Area',
-  file: 'File Upload',
-  heading: 'Heading',
-  paragraph: 'Enter your text here...',
-  separator: '',
-};
-
 const createDefaultField = (fieldType: FormFieldType, order: number): FormFieldDefinition => ({
   id: nanoid(8),
   type: fieldType,
-  label: { 'en-US': DEFAULT_FIELD_LABELS[fieldType] ?? 'Field' },
+  label: { 'en-US': FIELD_TYPE_META[fieldType]?.label ?? fieldType },
   order,
   required: false,
 });

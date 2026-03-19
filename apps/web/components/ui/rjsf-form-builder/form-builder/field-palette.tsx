@@ -15,42 +15,46 @@ import {
   IconSeparator,
   IconTextCaption,
 } from '@tabler/icons-react';
-import type { FormFieldType } from '@/registry/form-builder-types/types';
+import type { FormFieldType } from '@/lib/form-builder-types/types';
 
-type FieldTypeEntry = { type: FormFieldType; label: string; icon: ComponentType<{ size?: number }> };
+type FieldTypeMeta = {
+  label: string;
+  icon: ComponentType<{ size?: number }>;
+  category: 'input' | 'display';
+};
 
-const INPUT_FIELD_TYPES: FieldTypeEntry[] = [
-  { type: 'text', label: 'Text', icon: IconLetterCase },
-  { type: 'number', label: 'Number', icon: IconHash },
-  { type: 'email', label: 'Email', icon: IconAt },
-  { type: 'tel', label: 'Phone', icon: IconPhone },
-  { type: 'select', label: 'Select', icon: IconSelector },
-  { type: 'checkbox', label: 'Checkbox', icon: IconCheckbox },
-  { type: 'radio', label: 'Radio', icon: IconCircleDot },
-  { type: 'date', label: 'Date', icon: IconCalendar },
-  { type: 'textarea', label: 'Text Area', icon: IconAlignLeft },
-  { type: 'file', label: 'File', icon: IconPaperclip },
-];
+/**
+ * Single source of truth for builder UI metadata per field type.
+ * To add a new field type: add an entry here + a case in schema-builder.ts.
+ */
+export const FIELD_TYPE_META: Record<string, FieldTypeMeta> = {
+  text:      { label: 'Text',      icon: IconLetterCase, category: 'input' },
+  number:    { label: 'Number',    icon: IconHash,        category: 'input' },
+  email:     { label: 'Email',     icon: IconAt,          category: 'input' },
+  tel:       { label: 'Phone',     icon: IconPhone,       category: 'input' },
+  select:    { label: 'Select',    icon: IconSelector,    category: 'input' },
+  checkbox:  { label: 'Checkbox',  icon: IconCheckbox,    category: 'input' },
+  radio:     { label: 'Radio',     icon: IconCircleDot,   category: 'input' },
+  date:      { label: 'Date',      icon: IconCalendar,    category: 'input' },
+  textarea:  { label: 'Text Area', icon: IconAlignLeft,   category: 'input' },
+  file:      { label: 'File',      icon: IconPaperclip,   category: 'input' },
+  heading:   { label: 'Heading',   icon: IconHeading,     category: 'display' },
+  paragraph: { label: 'Paragraph', icon: IconTextCaption, category: 'display' },
+  separator: { label: 'Separator', icon: IconSeparator,   category: 'display' },
+};
 
-const DISPLAY_FIELD_TYPES: FieldTypeEntry[] = [
-  { type: 'heading', label: 'Heading', icon: IconHeading },
-  { type: 'paragraph', label: 'Paragraph', icon: IconTextCaption },
-  { type: 'separator', label: 'Separator', icon: IconSeparator },
-];
+const INPUT_FIELD_TYPES = Object.entries(FIELD_TYPE_META)
+  .filter(([, m]) => m.category === 'input')
+  .map(([type, m]) => ({ type: type as FormFieldType, ...m }));
 
-const ALL_FIELD_TYPES = [...INPUT_FIELD_TYPES, ...DISPLAY_FIELD_TYPES];
-
-export const FIELD_ICON_MAP: Record<string, ComponentType<{ size?: number }>> = Object.fromEntries(
-  ALL_FIELD_TYPES.map((f) => [f.type, f.icon]),
-);
-
-export const FIELD_LABEL_MAP: Record<string, string> = Object.fromEntries(
-  ALL_FIELD_TYPES.map((f) => [f.type, f.label]),
-);
+const DISPLAY_FIELD_TYPES = Object.entries(FIELD_TYPE_META)
+  .filter(([, m]) => m.category === 'display')
+  .map(([type, m]) => ({ type: type as FormFieldType, ...m }));
 
 export const PaletteOverlayItem = ({ fieldType }: { fieldType: string }) => {
-  const Icon = FIELD_ICON_MAP[fieldType];
-  const label = FIELD_LABEL_MAP[fieldType] ?? fieldType;
+  const meta = FIELD_TYPE_META[fieldType];
+  const Icon = meta?.icon;
+  const label = meta?.label ?? fieldType;
 
   return (
     <div className="bg-card text-card-foreground border-primary flex w-48 cursor-grabbing items-center gap-2 rounded-md border-2 px-3 py-2 text-sm shadow-lg">

@@ -9,10 +9,10 @@
       "@/lib/form-builder-types/*": [
         "./registry/form-builder-types/*"
       ],
-      "@/components/rjsf-form-builder/form-renderer/*": [
+      "@/components/ui/rjsf-form-builder/form-renderer/*": [
         "./registry/form-renderer/*"
       ],
-      "@/components/rjsf-form-builder/form-builder/*": [
+      "@/components/ui/rjsf-form-builder/form-builder/*": [
         "./registry/form-builder/*"
       ]
     },

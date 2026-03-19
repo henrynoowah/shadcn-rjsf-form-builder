@@ -24,21 +24,21 @@
       "dependencies": ["@rjsf/core", "@rjsf/utils", "@rjsf/validator-ajv8", "@tabler/icons-react", "clsx", "tailwind-merge"],
       "registryDependencies": ["form-builder-types", "input", "textarea", "select", "checkbox", "radio-group"],
       "files": [
-        { "path": "registry/form-renderer/form-renderer.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/form-renderer.tsx" },
-        { "path": "registry/form-renderer/theme.ts", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/theme.ts" },
-        { "path": "registry/form-renderer/widgets/text-widget.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/widgets/text-widget.tsx" },
-        { "path": "registry/form-renderer/widgets/textarea-widget.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/widgets/textarea-widget.tsx" },
-        { "path": "registry/form-renderer/widgets/select-widget.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/widgets/select-widget.tsx" },
-        { "path": "registry/form-renderer/widgets/checkbox-widget.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/widgets/checkbox-widget.tsx" },
-        { "path": "registry/form-renderer/widgets/radio-widget.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/widgets/radio-widget.tsx" },
-        { "path": "registry/form-renderer/widgets/date-widget.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/widgets/date-widget.tsx" },
-        { "path": "registry/form-renderer/widgets/file-widget.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/widgets/file-widget.tsx" },
-        { "path": "registry/form-renderer/fields/heading-field.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/fields/heading-field.tsx" },
-        { "path": "registry/form-renderer/fields/paragraph-field.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/fields/paragraph-field.tsx" },
-        { "path": "registry/form-renderer/fields/separator-field.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/fields/separator-field.tsx" },
-        { "path": "registry/form-renderer/templates/field-template.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/templates/field-template.tsx" },
-        { "path": "registry/form-renderer/templates/object-template.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/templates/object-template.tsx" },
-        { "path": "registry/form-renderer/templates/array-template.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-renderer/templates/array-template.tsx" }
+        { "path": "registry/form-renderer/form-renderer.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/form-renderer.tsx" },
+        { "path": "registry/form-renderer/theme.ts", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/theme.ts" },
+        { "path": "registry/form-renderer/widgets/text-widget.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/widgets/text-widget.tsx" },
+        { "path": "registry/form-renderer/widgets/textarea-widget.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/widgets/textarea-widget.tsx" },
+        { "path": "registry/form-renderer/widgets/select-widget.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/widgets/select-widget.tsx" },
+        { "path": "registry/form-renderer/widgets/checkbox-widget.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/widgets/checkbox-widget.tsx" },
+        { "path": "registry/form-renderer/widgets/radio-widget.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/widgets/radio-widget.tsx" },
+        { "path": "registry/form-renderer/widgets/date-widget.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/widgets/date-widget.tsx" },
+        { "path": "registry/form-renderer/widgets/file-widget.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/widgets/file-widget.tsx" },
+        { "path": "registry/form-renderer/fields/heading-field.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/fields/heading-field.tsx" },
+        { "path": "registry/form-renderer/fields/paragraph-field.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/fields/paragraph-field.tsx" },
+        { "path": "registry/form-renderer/fields/separator-field.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/fields/separator-field.tsx" },
+        { "path": "registry/form-renderer/templates/field-template.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/templates/field-template.tsx" },
+        { "path": "registry/form-renderer/templates/object-template.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/templates/object-template.tsx" },
+        { "path": "registry/form-renderer/templates/array-template.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-renderer/templates/array-template.tsx" }
       ]
     },
     {
@@ -49,12 +49,12 @@
       "dependencies": ["@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities", "nanoid", "@tabler/icons-react"],
       "registryDependencies": ["form-builder-types", "form-renderer"],
       "files": [
-        { "path": "registry/form-builder/form-builder.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-builder/form-builder.tsx" },
-        { "path": "registry/form-builder/builder-context.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-builder/builder-context.tsx" },
-        { "path": "registry/form-builder/canvas.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-builder/canvas.tsx" },
-        { "path": "registry/form-builder/canvas-field.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-builder/canvas-field.tsx" },
-        { "path": "registry/form-builder/field-palette.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-builder/field-palette.tsx" },
-        { "path": "registry/form-builder/field-settings-panel.tsx", "type": "registry:ui", "target": "components/rjsf-form-builder/form-builder/field-settings-panel.tsx" }
+        { "path": "registry/form-builder/form-builder.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-builder/form-builder.tsx" },
+        { "path": "registry/form-builder/builder-context.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-builder/builder-context.tsx" },
+        { "path": "registry/form-builder/canvas.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-builder/canvas.tsx" },
+        { "path": "registry/form-builder/canvas-field.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-builder/canvas-field.tsx" },
+        { "path": "registry/form-builder/field-palette.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-builder/field-palette.tsx" },
+        { "path": "registry/form-builder/field-settings-panel.tsx", "type": "registry:ui", "target": "components/ui/rjsf-form-builder/form-builder/field-settings-panel.tsx" }
       ]
     }
   ]

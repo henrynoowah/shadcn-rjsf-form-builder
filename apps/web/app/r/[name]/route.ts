@@ -4,7 +4,7 @@ import { join } from 'path';
 import { getRegistryItem } from '@/lib/registry';
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ name: string }> }
 ) {
   const { name } = await params;
@@ -13,6 +13,11 @@ export async function GET(
   if (!item) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
+
+  const { origin } = new URL(request.url);
+  const registryDependencies = (item.registryDependencies ?? []).map((dep) =>
+    dep.startsWith('http') ? dep : `${origin}/r/${dep}.json`
+  );
 
   const files = item.files.map((file) => {
     const relativePath = file.path.replace('registry/', '');
@@ -26,7 +31,7 @@ export async function GET(
   });
 
   return NextResponse.json(
-    { ...item, files },
+    { ...item, registryDependencies, files },
     {
       headers: {
         'Access-Control-Allow-Origin': '*',

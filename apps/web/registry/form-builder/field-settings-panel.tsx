@@ -1,6 +1,9 @@
 import { useFormBuilder } from './builder-context';
 import type { LocalizedString, FormFieldOption } from '@/lib/form-builder-types/types';
 import { FormFieldType, isDisplayField } from '@/lib/form-builder-types/types';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type FieldSettingsPanelProps = {
   locale: string;
@@ -28,9 +31,7 @@ const LocalizedInput = ({
       {locales.map((loc) => (
         <div key={loc} className="flex items-center gap-2">
           <span className="text-sidebar-foreground/50 w-12 shrink-0 text-xs">{loc}</span>
-          <input
-            type="text"
-            className="border-sidebar-border bg-background focus-visible:border-ring focus-visible:ring-ring/50 flex h-8 w-full rounded-md border px-2 py-1 text-sm outline-none transition-shadow focus-visible:ring-[3px]"
+          <Input
             value={current[loc] ?? ''}
             placeholder={placeholder}
             onChange={(e) => onChange({ ...current, [loc]: e.target.value })}
@@ -72,9 +73,7 @@ const OptionsEditor = ({
       {options.map((opt, i) => (
         <div key={i} className="border-sidebar-border bg-background/50 rounded-md border p-2">
           <div className="mb-1 flex items-center gap-2">
-            <input
-              type="text"
-              className="border-sidebar-border bg-background focus-visible:border-ring focus-visible:ring-ring/50 flex h-7 w-full rounded border px-2 text-xs outline-none transition-shadow focus-visible:ring-[3px]"
+            <Input
               value={opt.value}
               placeholder="Value"
               onChange={(e) => updateOption(i, { value: e.target.value })}
@@ -127,17 +126,21 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
 
       <div>
         <label className="mb-1 block text-xs font-medium">Type</label>
-        <select
-          className="border-sidebar-border bg-background focus-visible:border-ring focus-visible:ring-ring/50 flex h-8 w-full rounded-md border px-2 text-sm outline-none transition-shadow focus-visible:ring-[3px]"
+        <Select
           value={selectedField.type}
-          onChange={(e) => updateField(selectedField.id, { type: e.target.value as FormFieldType })}
+          onValueChange={(v) => updateField(selectedField.id, { type: v as FormFieldType })}
         >
-          {Object.entries(FormFieldType).map(([key, value]) => (
-            <option key={value} value={value}>
-              {key}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(FormFieldType).map(([key, value]) => (
+              <SelectItem key={value} value={value}>
+                {key}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div>
@@ -179,12 +182,10 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
 
       {!isDisplay && (
         <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
+          <Checkbox
             id="field-required"
-            className="border-sidebar-border accent-primary h-4 w-4 rounded border"
             checked={selectedField.required ?? false}
-            onChange={(e) => updateField(selectedField.id, { required: e.target.checked })}
+            onCheckedChange={(checked) => updateField(selectedField.id, { required: checked === true })}
           />
           <label htmlFor="field-required" className="text-sm">
             Required
@@ -212,9 +213,8 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
               <>
                 <div className="flex items-center gap-2">
                   <span className="w-20 shrink-0 text-xs">Min Length</span>
-                  <input
+                  <Input
                     type="number"
-                    className="border-sidebar-border bg-background focus-visible:border-ring focus-visible:ring-ring/50 flex h-7 w-full rounded border px-2 text-xs outline-none transition-shadow focus-visible:ring-[3px]"
                     value={selectedField.validation?.minLength ?? ''}
                     onChange={(e) =>
                       updateField(selectedField.id, {
@@ -228,9 +228,8 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-20 shrink-0 text-xs">Max Length</span>
-                  <input
+                  <Input
                     type="number"
-                    className="border-sidebar-border bg-background focus-visible:border-ring focus-visible:ring-ring/50 flex h-7 w-full rounded border px-2 text-xs outline-none transition-shadow focus-visible:ring-[3px]"
                     value={selectedField.validation?.maxLength ?? ''}
                     onChange={(e) =>
                       updateField(selectedField.id, {
@@ -248,9 +247,8 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
               <>
                 <div className="flex items-center gap-2">
                   <span className="w-20 shrink-0 text-xs">Min</span>
-                  <input
+                  <Input
                     type="number"
-                    className="border-sidebar-border bg-background focus-visible:border-ring focus-visible:ring-ring/50 flex h-7 w-full rounded border px-2 text-xs outline-none transition-shadow focus-visible:ring-[3px]"
                     value={selectedField.validation?.min ?? ''}
                     onChange={(e) =>
                       updateField(selectedField.id, {
@@ -264,9 +262,8 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-20 shrink-0 text-xs">Max</span>
-                  <input
+                  <Input
                     type="number"
-                    className="border-sidebar-border bg-background focus-visible:border-ring focus-visible:ring-ring/50 flex h-7 w-full rounded border px-2 text-xs outline-none transition-shadow focus-visible:ring-[3px]"
                     value={selectedField.validation?.max ?? ''}
                     onChange={(e) =>
                       updateField(selectedField.id, {

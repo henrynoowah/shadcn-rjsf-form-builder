@@ -12,7 +12,7 @@
     "tailwind-merge"
   ],
   "registryDependencies": [
-    "https://raw.githubusercontent.com/henrycho/shadcn-rjsf-form-builder/main/apps/web/public/r/form-builder-types.json",
+    "https://raw.githubusercontent.com/henrynoowah/shadcn-rjsf-form-builder/main/apps/web/public/r/form-builder-types.json",
     "input",
     "textarea",
     "select",

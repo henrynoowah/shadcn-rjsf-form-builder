@@ -3,7 +3,7 @@ import InstallCard from './_components/install-card';
 import ThemeToggle from './_components/theme-toggle';
 
 const REGISTRY_RAW_BASE =
-  'https://raw.githubusercontent.com/henrycho/shadcn-rjsf-form-builder/main/apps/web/public/r';
+  'https://raw.githubusercontent.com/henrynoowah/shadcn-rjsf-form-builder/main/apps/web/public/r';
 
 const FEATURES = [
   {

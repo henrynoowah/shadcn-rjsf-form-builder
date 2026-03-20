@@ -2,7 +2,7 @@ import CodeBlock from '../_components/code-block';
 import InstallCard from '../_components/install-card';
 
 const REGISTRY_RAW_BASE =
-  'https://raw.githubusercontent.com/henrycho/shadcn-rjsf-form-builder/main/apps/web/public/r';
+  'https://raw.githubusercontent.com/henrynoowah/shadcn-rjsf-form-builder/main/apps/web/public/r';
 
 const INSTALL_STEPS = [
   {

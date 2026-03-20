@@ -15,7 +15,7 @@ const ROOT = join(__dirname, '..');
 const WEB = join(ROOT, 'apps/web');
 
 const GITHUB_RAW_BASE =
-  'https://raw.githubusercontent.com/henrycho/shadcn-rjsf-form-builder/main/apps/web/public/r';
+  'https://raw.githubusercontent.com/henrynoowah/shadcn-rjsf-form-builder/main/apps/web/public/r';
 
 const registry = JSON.parse(readFileSync(join(WEB, 'registry.json'), 'utf-8'));
 const localNames = new Set(registry.items.map((item) => item.name));

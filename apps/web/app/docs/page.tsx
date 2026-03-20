@@ -36,7 +36,7 @@ export default async function DocsGetStarted() {
 
       {/* Overview */}
       <section>
-        <h2 id="overview" className="text-xl font-semibold border-b border-border pb-2 mb-4">Overview</h2>
+        <h2 id="overview" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Overview</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           The registry ships three items that work together:
         </p>
@@ -80,7 +80,7 @@ export default async function DocsGetStarted() {
 
       {/* Prerequisites */}
       <section>
-        <h2 id="prerequisites" className="text-xl font-semibold border-b border-border pb-2 mb-4">Prerequisites</h2>
+        <h2 id="prerequisites" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Prerequisites</h2>
         <ul className="space-y-2 text-sm text-muted-foreground">
           <li className="flex items-start gap-2">
             <span className="mt-0.5 text-foreground">•</span>
@@ -107,7 +107,7 @@ export default async function DocsGetStarted() {
 
       {/* Installation */}
       <section>
-        <h2 id="installation" className="text-xl font-semibold border-b border-border pb-2 mb-4">Installation</h2>
+        <h2 id="installation" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Installation</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-6">
           Install in order — <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">form-builder-types</code> must
           be installed first because the other two depend on it.
@@ -128,7 +128,7 @@ export default async function DocsGetStarted() {
 
       {/* Quick Start: FormRenderer */}
       <section>
-        <h2 id="quick-start-formrenderer" className="text-xl font-semibold border-b border-border pb-2 mb-4">Quick Start: FormRenderer</h2>
+        <h2 id="quick-start-formrenderer" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Quick Start: FormRenderer</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           Pass a <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormSchema</code> to{' '}
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormRenderer</code> and handle submissions
@@ -161,7 +161,7 @@ export default function ContactPage() {
 
       {/* Quick Start: FormBuilder */}
       <section>
-        <h2 id="quick-start-formbuilder" className="text-xl font-semibold border-b border-border pb-2 mb-4">Quick Start: FormBuilder</h2>
+        <h2 id="quick-start-formbuilder" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Quick Start: FormBuilder</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           Wire <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormBuilder</code> to a{' '}
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormRenderer</code> for a live preview.
@@ -200,7 +200,7 @@ export default function BuilderPage() {
 
       {/* Locale Setup */}
       <section>
-        <h2 id="locale-setup" className="text-xl font-semibold border-b border-border pb-2 mb-4">Locale Setup</h2>
+        <h2 id="locale-setup" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Locale Setup</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           Both components accept a <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">locale</code> and{' '}
           <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">baseLocale</code> prop.

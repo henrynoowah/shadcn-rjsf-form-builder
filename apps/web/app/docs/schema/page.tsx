@@ -17,7 +17,7 @@ export default async function SchemaReferencePage() {
 
       {/* FormSchema */}
       <section>
-        <h2 id="formschema" className="text-xl font-semibold border-b border-border pb-2 mb-4">
+        <h2 id="formschema" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">
           FormSchema
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
@@ -108,7 +108,7 @@ export default async function SchemaReferencePage() {
       <section>
         <h2
           id="formfielddefinition"
-          className="text-xl font-semibold border-b border-border pb-2 mb-4"
+          className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4"
         >
           FormFieldDefinition
         </h2>
@@ -260,7 +260,7 @@ export default async function SchemaReferencePage() {
 
       {/* Field Types */}
       <section>
-        <h2 id="field-types" className="text-xl font-semibold border-b border-border pb-2 mb-4">
+        <h2 id="field-types" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">
           Field Types
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
@@ -475,7 +475,7 @@ export default async function SchemaReferencePage() {
 
       {/* LocalizedString */}
       <section>
-        <h2 id="localizedstring" className="text-xl font-semibold border-b border-border pb-2 mb-4">
+        <h2 id="localizedstring" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">
           LocalizedString
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
@@ -502,7 +502,7 @@ label: { "en-US": "Full Name", "ko-KR": "이름", "ja-JP": "氏名" }`}
 
       {/* Validation */}
       <section>
-        <h2 id="validation" className="text-xl font-semibold border-b border-border pb-2 mb-4">
+        <h2 id="validation" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">
           Validation
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
@@ -619,7 +619,7 @@ registerValidator('no-profanity', (value) => {
 
       {/* Conditions */}
       <section>
-        <h2 id="conditions" className="text-xl font-semibold border-b border-border pb-2 mb-4">
+        <h2 id="conditions" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">
           Conditions
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
@@ -720,7 +720,7 @@ registerValidator('no-profanity', (value) => {
 
       {/* Settings */}
       <section>
-        <h2 id="settings" className="text-xl font-semibold border-b border-border pb-2 mb-4">
+        <h2 id="settings" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">
           Settings
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">

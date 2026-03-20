@@ -278,7 +278,7 @@ export default async function ExamplesPage() {
 
       {/* Contact Form */}
       <section>
-        <h2 id="contact-form" className="text-xl font-semibold border-b border-border pb-2 mb-3">
+        <h2 id="contact-form" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-3">
           Contact Form
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
@@ -296,7 +296,7 @@ export default async function ExamplesPage() {
       <section>
         <h2
           id="conditional-fields"
-          className="text-xl font-semibold border-b border-border pb-2 mb-3"
+          className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-3"
         >
           Conditional Fields
         </h2>
@@ -315,7 +315,7 @@ export default async function ExamplesPage() {
       <section>
         <h2
           id="multi-locale-form"
-          className="text-xl font-semibold border-b border-border pb-2 mb-3"
+          className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-3"
         >
           Multi-locale Form
         </h2>
@@ -333,7 +333,7 @@ export default async function ExamplesPage() {
       <section>
         <h2
           id="custom-validation"
-          className="text-xl font-semibold border-b border-border pb-2 mb-3"
+          className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-3"
         >
           Custom Validation
         </h2>
@@ -353,7 +353,7 @@ export default async function ExamplesPage() {
       <section>
         <h2
           id="controlled-formbuilder"
-          className="text-xl font-semibold border-b border-border pb-2 mb-3"
+          className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-3"
         >
           Controlled FormBuilder
         </h2>

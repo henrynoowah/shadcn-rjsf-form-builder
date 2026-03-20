@@ -90,6 +90,19 @@ export default async function Home() {
         }}
       >
         <div className="relative mx-auto max-w-5xl">
+          {/* Project icon */}
+          <div className="mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="h-10 w-10" aria-hidden="true">
+              <rect width="32" height="32" rx="7" className="fill-foreground" />
+              <circle cx="8" cy="12" r="1.25" className="fill-background" opacity="0.25" />
+              <circle cx="8" cy="16" r="1.25" className="fill-background" opacity="0.25" />
+              <circle cx="8" cy="20" r="1.25" className="fill-background" opacity="0.25" />
+              <rect x="12" y="10"  width="13" height="3" rx="1.5" className="fill-background" opacity="0.90" />
+              <rect x="12" y="14.5" width="10" height="3" rx="1.5" className="fill-background" opacity="0.55" />
+              <rect x="12" y="19"  width="7"  height="3" rx="1.5" className="fill-background" opacity="0.25" />
+            </svg>
+          </div>
+
           <div className="mb-5 flex items-center gap-2">
             <span className="inline-block h-2 w-2 rounded-full bg-foreground" />
             <span className="font-mono text-xs text-muted-foreground">

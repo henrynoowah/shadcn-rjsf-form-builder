@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useReducer, useCallback, useEffect, type ReactNode } from 'react';
 import { nanoid } from 'nanoid';
 import type { FormSchema, FormFieldDefinition, FormFieldType } from '@/lib/form-builder-types/types';
 import { FIELD_TYPE_META } from './field-palette';
@@ -169,11 +169,11 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({ initialSchema,
 
   const selectedField = state.schema.fields.find((f) => f.id === state.selectedFieldId);
 
-  // Notify parent of changes
-  const prevSchemaRef = { current: state.schema };
-  if (prevSchemaRef.current !== state.schema) {
+  // Notify parent whenever schema changes
+  useEffect(() => {
     notifyChange(state);
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.schema]);
 
   return (
     <BuilderContext.Provider

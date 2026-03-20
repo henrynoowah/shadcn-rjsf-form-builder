@@ -1,7 +1,8 @@
-import CodeBlock from './_components/code-block';
+import CodeBlock from '../_components/code-block';
 import InstallCard from '../_components/install-card';
 
-const REGISTRY_URL = process.env.NEXT_PUBLIC_REGISTRY_URL;
+const REGISTRY_RAW_BASE =
+  'https://raw.githubusercontent.com/henrycho/shadcn-rjsf-form-builder/main/apps/web/public/r';
 
 const INSTALL_STEPS = [
   {
@@ -119,7 +120,7 @@ export default async function DocsGetStarted() {
               name={step.name}
               description={step.description}
               note={step.note ?? undefined}
-              cmd={`npx shadcn@latest add "${REGISTRY_URL}/r/${step.name}"`}
+              cmd={`npx shadcn@latest add "${REGISTRY_RAW_BASE}/${step.name}.json"`}
             />
           ))}
         </div>

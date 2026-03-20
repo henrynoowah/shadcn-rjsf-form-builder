@@ -2,7 +2,8 @@ import { getAllRegistryItems } from '@/lib/registry';
 import InstallCard from './_components/install-card';
 import ThemeToggle from './_components/theme-toggle';
 
-const REGISTRY_URL = process.env.NEXT_PUBLIC_REGISTRY_URL;
+const REGISTRY_RAW_BASE =
+  'https://raw.githubusercontent.com/henrycho/shadcn-rjsf-form-builder/main/apps/web/public/r';
 
 const FEATURES = [
   {
@@ -169,7 +170,7 @@ export default async function Home() {
                 key={item.name}
                 name={item.name}
                 description={item.description ?? ''}
-                cmd={`npx shadcn@latest add "${REGISTRY_URL}/r/${item.name}"`}
+                cmd={`npx shadcn@latest add "${REGISTRY_RAW_BASE}/${item.name}.json"`}
                 typeBadge={TYPE_LABELS[item.type] ?? item.type}
                 dependencies={item.dependencies}
               />

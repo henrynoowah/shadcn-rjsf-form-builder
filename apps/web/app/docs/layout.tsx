@@ -60,7 +60,10 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       <nav className="sticky top-0 z-50 border-b border-border bg-background/80 px-6 py-4 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="font-mono text-sm font-semibold tracking-tight hover:opacity-80">
+            <Link
+              href="/"
+              className="font-mono text-sm font-semibold tracking-tight hover:opacity-80"
+            >
               shadcn-rjsf
             </Link>
             <span className="rounded-full border border-border px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
@@ -112,17 +115,17 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                     {item.label}
                   </Link>
 
-                  {/* Section links — visible only on the active page */}
-                  {isActive && item.sections.length > 0 && (
+                  {/* Section links */}
+                  {item.sections.length > 0 && (
                     <div className="ml-3 mt-0.5 space-y-0.5 border-l border-border pl-3">
                       {item.sections.map((section) => (
-                        <a
+                        <Link
                           key={section.hash}
-                          href={`#${section.hash}`}
+                          href={`${item.href}#${section.hash}`}
                           className="block py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
                         >
                           {section.label}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   )}

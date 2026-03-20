@@ -235,9 +235,29 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
   const { selectedField, updateField, state, updateSchema } = useFormBuilder();
   const { schema } = state;
 
-  const submitLabelSection = (
-    <div className="border-sidebar-border border-t pt-4">
-      <h3 className="text-sidebar-foreground/60 mb-3 px-1 text-xs font-semibold uppercase tracking-wider">Form</h3>
+  const formMetaSection = (
+    <div className="border-sidebar-border border-t pt-4 space-y-4">
+      <h3 className="text-sidebar-foreground/60 px-1 text-xs font-semibold uppercase tracking-wider">Form</h3>
+      <div>
+        <label className="mb-1 block text-xs font-medium">Title</label>
+        <LocalizedInput
+          value={schema.title}
+          locale={locale}
+          availableLocales={availableLocales}
+          onChange={(title) => updateSchema({ title })}
+          placeholder="Form title"
+        />
+      </div>
+      <div>
+        <label className="mb-1 block text-xs font-medium">Description</label>
+        <LocalizedInput
+          value={schema.description}
+          locale={locale}
+          availableLocales={availableLocales}
+          onChange={(description) => updateSchema({ description })}
+          placeholder="Optional description"
+        />
+      </div>
       <div>
         <label className="mb-1 block text-xs font-medium">Submit Button Label</label>
         <LocalizedInput
@@ -256,7 +276,7 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
       <div className="bg-sidebar text-sidebar-foreground border-sidebar-border w-64 shrink-0 flex flex-col overflow-y-auto border-l p-3 gap-4">
         <p className="text-sidebar-foreground/60 text-center text-sm mt-4">Select a field to edit its properties</p>
         <div className="flex-1" />
-        {submitLabelSection}
+        {formMetaSection}
       </div>
     );
   }
@@ -436,7 +456,7 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
         </div>
       )}
 
-      {submitLabelSection}
+      {formMetaSection}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { codeToHtml } from 'shiki';
+import CodeBlock from './code-block';
 import CopyButton from './copy-button';
 
 type Props = {
@@ -20,12 +20,6 @@ export default async function InstallCard({
   typeBadge,
   dependencies,
 }: Props) {
-  const codeHtml = await codeToHtml(cmd, {
-    lang: 'sh',
-    themes: { light: 'nord', dark: 'github-dark-dimmed' },
-    defaultColor: false,
-  });
-
   return (
     <div className="rounded-lg border border-border overflow-hidden">
       {/* Header */}
@@ -50,12 +44,9 @@ export default async function InstallCard({
       </div>
 
       {/* Command — syntax highlighted + copy button */}
-      <div className="relative mx-4 mb-4">
-        <div
-          className="shiki-wrapper overflow-x-auto rounded-md text-xs pr-16 [&_.shiki]:!rounded-md [&_.shiki]:p-3"
-          dangerouslySetInnerHTML={{ __html: codeHtml }}
-        />
-        <div className="absolute right-2 top-1/2 -translate-y-1/2">
+      <div className="relative mx-4 mb-4 overflow-hidden rounded-md">
+        <CodeBlock code={cmd} lang="sh" className="[&_.shiki]:p-3" />
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 z-10">
           <CopyButton text={cmd} />
         </div>
       </div>

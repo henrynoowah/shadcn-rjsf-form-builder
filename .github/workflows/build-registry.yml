@@ -1,0 +1,36 @@
+name: Build Registry
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/registry/**'
+      - 'apps/web/registry.json'
+      - 'scripts/build-registry.mjs'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: node scripts/build-registry.mjs
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: regenerate static registry JSON'
+          file_pattern: 'apps/web/public/r/*.json'

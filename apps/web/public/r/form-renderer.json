@@ -1,0 +1,114 @@
+{
+  "name": "form-renderer",
+  "type": "registry:ui",
+  "title": "Form Renderer",
+  "description": "A themed RJSF form renderer with shadcn/ui-styled widgets, fields, and templates.",
+  "dependencies": [
+    "@rjsf/core",
+    "@rjsf/utils",
+    "@rjsf/validator-ajv8",
+    "@tabler/icons-react",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/henrycho/shadcn-rjsf-form-builder/main/apps/web/public/r/form-builder-types.json",
+    "input",
+    "textarea",
+    "select",
+    "checkbox",
+    "radio-group"
+  ],
+  "files": [
+    {
+      "path": "registry/form-renderer/form-renderer.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/form-renderer.tsx",
+      "content": "import { useMemo, useState } from 'react';\nimport { withTheme } from '@rjsf/core';\nimport type { ThemeProps } from '@rjsf/core';\nimport validator from '@rjsf/validator-ajv8';\nimport type { IChangeEvent } from '@rjsf/core';\nimport type { FormSchema } from '@/lib/form-builder-types/types';\nimport { toJsonSchema, toUiSchema, evaluateCondition } from '@/lib/form-builder-types/schema-builder';\nimport { localizeString } from '@/lib/form-builder-types/i18n';\nimport { formBuilderTheme } from './theme';\n\nexport type FormRendererProps = {\n  schema: FormSchema;\n  locale: string;\n  baseLocale?: string;\n  formData?: Record<string, unknown>;\n  onChange?: (data: Record<string, unknown>) => void;\n  onSubmit?: (data: Record<string, unknown>) => void;\n  onError?: (errors: unknown[]) => void;\n  className?: string;\n  disabled?: boolean;\n  /** Override individual widgets, fields, or templates. Merged on top of the default shadcn theme. */\n  theme?: Partial<ThemeProps>;\n  /** Replace the submit button with a custom element */\n  submitButton?: React.ReactNode;\n};\n\nexport const FormRenderer: React.FC<FormRendererProps> = ({\n  schema,\n  locale,\n  baseLocale,\n  formData: externalFormData,\n  onChange,\n  onSubmit,\n  onError,\n  className,\n  disabled,\n  theme: themeOverride,\n  submitButton,\n}) => {\n  // Track live form data so we can evaluate conditions and hide/show fields dynamically.\n  const [liveData, setLiveData] = useState<Record<string, unknown>>(externalFormData ?? {});\n\n  const visibleSchema = useMemo<FormSchema>(() => ({\n    ...schema,\n    fields: schema.fields.filter((f) => evaluateCondition(f.condition, liveData)),\n  }), [schema, liveData]);\n\n  const jsonSchema = useMemo(() => toJsonSchema(visibleSchema, locale, baseLocale), [visibleSchema, locale, baseLocale]);\n  const uiSchema = useMemo(() => toUiSchema(visibleSchema, locale, baseLocale), [visibleSchema, locale, baseLocale]);\n  const submitLabel = localizeString(schema.submitLabel, locale, baseLocale) || 'Submit';\n\n  const mergedTheme = useMemo<ThemeProps>(() => {\n    if (!themeOverride) return formBuilderTheme;\n    return {\n      widgets: { ...formBuilderTheme.widgets, ...themeOverride.widgets },\n      fields: { ...formBuilderTheme.fields, ...themeOverride.fields },\n      templates: { ...formBuilderTheme.templates, ...themeOverride.templates },\n    };\n  }, [themeOverride]);\n\n  const ThemedForm = useMemo(() => withTheme(mergedTheme), [mergedTheme]);\n\n  return (\n    <div className={className} data-testid=\"form-renderer\">\n      <ThemedForm\n        schema={jsonSchema}\n        uiSchema={uiSchema}\n        validator={validator}\n        formData={externalFormData ?? liveData}\n        disabled={disabled}\n        onChange={(e: IChangeEvent) => {\n          setLiveData(e.formData);\n          onChange?.(e.formData);\n        }}\n        onSubmit={(e: IChangeEvent) => onSubmit?.(e.formData)}\n        onError={(errors: unknown[]) => onError?.(errors)}\n      >\n        {submitButton ?? (\n          <button\n            type=\"submit\"\n            disabled={disabled}\n            className=\"bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring mt-4 inline-flex h-9 items-center justify-center rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50\"\n          >\n            {submitLabel}\n          </button>\n        )}\n      </ThemedForm>\n    </div>\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/theme.ts",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/theme.ts",
+      "content": "import type { ThemeProps } from '@rjsf/core';\nimport { TextWidget } from './widgets/text-widget';\nimport { TextareaWidget } from './widgets/textarea-widget';\nimport { SelectWidget } from './widgets/select-widget';\nimport { CheckboxWidget } from './widgets/checkbox-widget';\nimport { RadioWidget } from './widgets/radio-widget';\nimport { DateWidget } from './widgets/date-widget';\nimport { FileWidget } from './widgets/file-widget';\nimport { HeadingField } from './fields/heading-field';\nimport { ParagraphField } from './fields/paragraph-field';\nimport { SeparatorField } from './fields/separator-field';\nimport { FieldTemplate } from './templates/field-template';\nimport { ObjectFieldTemplate } from './templates/object-template';\nimport { ArrayFieldTemplate } from './templates/array-template';\n\nexport const formBuilderTheme: ThemeProps = {\n  widgets: {\n    TextWidget,\n    TextareaWidget,\n    SelectWidget,\n    CheckboxWidget,\n    RadioWidget,\n    DateWidget,\n    FileWidget,\n    EmailWidget: TextWidget,\n    URLWidget: TextWidget,\n  },\n  fields: {\n    HeadingField,\n    ParagraphField,\n    SeparatorField,\n  },\n  templates: {\n    FieldTemplate,\n    ObjectFieldTemplate,\n    ArrayFieldTemplate,\n  },\n};\n\nexport {\n  TextWidget,\n  TextareaWidget,\n  SelectWidget,\n  CheckboxWidget,\n  RadioWidget,\n  DateWidget,\n  FileWidget,\n  HeadingField,\n  ParagraphField,\n  SeparatorField,\n  FieldTemplate,\n  ObjectFieldTemplate,\n  ArrayFieldTemplate,\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/widgets/text-widget.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/widgets/text-widget.tsx",
+      "content": "import type { WidgetProps } from '@rjsf/utils';\nimport { Input } from '@/components/ui/input';\n\nexport const TextWidget = (props: WidgetProps) => {\n  const { id, value, required, disabled, readonly, onChange, onBlur, onFocus, placeholder, autofocus, schema } =\n    props;\n\n  const type = schema.format === 'email' ? 'email' : schema.format === 'tel' ? 'tel' : 'text';\n\n  return (\n    <Input\n      id={id}\n      type={type}\n      value={value ?? ''}\n      required={required}\n      disabled={disabled || readonly}\n      placeholder={placeholder}\n      autoFocus={autofocus}\n      onChange={(e) => onChange(e.target.value)}\n      onBlur={(e) => onBlur?.(id, e.target.value)}\n      onFocus={(e) => onFocus?.(id, e.target.value)}\n    />\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/widgets/textarea-widget.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/widgets/textarea-widget.tsx",
+      "content": "import type { WidgetProps } from '@rjsf/utils';\nimport { Textarea } from '@/components/ui/textarea';\n\nexport const TextareaWidget = (props: WidgetProps) => {\n  const { id, value, required, disabled, readonly, onChange, onBlur, onFocus, placeholder, autofocus } = props;\n\n  return (\n    <Textarea\n      id={id}\n      value={value ?? ''}\n      required={required}\n      disabled={disabled || readonly}\n      placeholder={placeholder}\n      autoFocus={autofocus}\n      rows={4}\n      onChange={(e) => onChange(e.target.value)}\n      onBlur={(e) => onBlur?.(id, e.target.value)}\n      onFocus={(e) => onFocus?.(id, e.target.value)}\n    />\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/widgets/select-widget.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/widgets/select-widget.tsx",
+      "content": "import type { WidgetProps } from '@rjsf/utils';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\n\nexport const SelectWidget = (props: WidgetProps) => {\n  const { id, value, required, disabled, readonly, onChange, options, placeholder } = props;\n  const { enumOptions } = options;\n\n  return (\n    <Select value={value ?? ''} onValueChange={onChange} disabled={disabled || readonly} required={required}>\n      <SelectTrigger id={id} className=\"w-full\">\n        <SelectValue placeholder={placeholder || 'Select...'} />\n      </SelectTrigger>\n      <SelectContent>\n        {enumOptions?.map(({ value: optValue, label }) => (\n          <SelectItem key={optValue} value={optValue}>\n            {label}\n          </SelectItem>\n        ))}\n      </SelectContent>\n    </Select>\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/widgets/checkbox-widget.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/widgets/checkbox-widget.tsx",
+      "content": "import type { WidgetProps } from '@rjsf/utils';\nimport { Checkbox } from '@/components/ui/checkbox';\n\nexport const CheckboxWidget = (props: WidgetProps) => {\n  const { id, value, disabled, readonly, onChange, label } = props;\n\n  return (\n    <div className=\"flex items-center gap-2\">\n      <Checkbox\n        id={id}\n        checked={value ?? false}\n        disabled={disabled || readonly}\n        onCheckedChange={(checked) => onChange(checked === true)}\n      />\n      {label && (\n        <label\n          htmlFor={id}\n          className=\"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70\"\n        >\n          {label}\n        </label>\n      )}\n    </div>\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/widgets/radio-widget.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/widgets/radio-widget.tsx",
+      "content": "import type { WidgetProps } from '@rjsf/utils';\nimport { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';\n\nexport const RadioWidget = (props: WidgetProps) => {\n  const { id, value, required, disabled, readonly, onChange, options } = props;\n  const { enumOptions } = options;\n\n  return (\n    <RadioGroup\n      id={id}\n      value={value ?? ''}\n      onValueChange={onChange}\n      disabled={disabled || readonly}\n      required={required}\n      className=\"flex flex-col gap-2\"\n    >\n      {enumOptions?.map(({ value: optValue, label }) => (\n        <div key={optValue} className=\"flex items-center gap-2\">\n          <RadioGroupItem id={`${id}-${optValue}`} value={optValue} />\n          <label htmlFor={`${id}-${optValue}`} className=\"text-sm font-medium leading-none\">\n            {label}\n          </label>\n        </div>\n      ))}\n    </RadioGroup>\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/widgets/date-widget.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/widgets/date-widget.tsx",
+      "content": "import type { WidgetProps } from '@rjsf/utils';\nimport { Input } from '@/components/ui/input';\n\nexport const DateWidget = (props: WidgetProps) => {\n  const { id, value, required, disabled, readonly, onChange, onBlur, onFocus, autofocus } = props;\n\n  return (\n    <Input\n      id={id}\n      type=\"date\"\n      value={value ?? ''}\n      required={required}\n      disabled={disabled || readonly}\n      autoFocus={autofocus}\n      onChange={(e) => onChange(e.target.value)}\n      onBlur={(e) => onBlur?.(id, e.target.value)}\n      onFocus={(e) => onFocus?.(id, e.target.value)}\n    />\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/widgets/file-widget.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/widgets/file-widget.tsx",
+      "content": "import type { WidgetProps } from '@rjsf/utils';\nimport { Input } from '@/components/ui/input';\n\nexport const FileWidget = (props: WidgetProps) => {\n  const { id, required, disabled, readonly, onChange, autofocus } = props;\n\n  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {\n    const file = e.target.files?.[0];\n    if (!file) {\n      onChange(undefined);\n      return;\n    }\n    const reader = new FileReader();\n    reader.onload = () => onChange(reader.result);\n    reader.readAsDataURL(file);\n  };\n\n  return (\n    <Input\n      id={id}\n      type=\"file\"\n      required={required}\n      disabled={disabled || readonly}\n      autoFocus={autofocus}\n      onChange={handleChange}\n    />\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/fields/heading-field.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/fields/heading-field.tsx",
+      "content": "import type { FieldProps } from '@rjsf/utils';\n\nexport const HeadingField = (props: FieldProps) => {\n  const { schema } = props;\n\n  return (\n    <div className=\"mb-4\">\n      <h2 className=\"text-foreground text-xl font-semibold tracking-tight\">{schema.title}</h2>\n      {schema.description && <p className=\"text-muted-foreground mt-1 text-sm\">{schema.description}</p>}\n    </div>\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/fields/paragraph-field.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/fields/paragraph-field.tsx",
+      "content": "import type { FieldProps } from '@rjsf/utils';\n\nexport const ParagraphField = (props: FieldProps) => {\n  const { schema } = props;\n\n  return (\n    <div className=\"mb-4\">\n      <p className=\"text-muted-foreground text-sm leading-relaxed\">{schema.title}</p>\n    </div>\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/fields/separator-field.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/fields/separator-field.tsx",
+      "content": "import type { FieldProps } from '@rjsf/utils';\n\nexport const SeparatorField = (_props: FieldProps) => {\n  return (\n    <div className=\"my-4\" role=\"separator\">\n      <hr className=\"border-border\" />\n    </div>\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/templates/field-template.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/templates/field-template.tsx",
+      "content": "import type { FieldTemplateProps } from '@rjsf/utils';\n\nexport const FieldTemplate = (props: FieldTemplateProps) => {\n  const { id, label, required, description, errors, children, schema, displayLabel } = props;\n\n  if (schema.type === 'boolean') {\n    return (\n      <div className=\"mb-4\">\n        {children}\n        {description && <div className=\"text-muted-foreground mt-1 text-xs\">{description}</div>}\n        {errors && <div className=\"text-destructive mt-1 text-xs\">{errors}</div>}\n      </div>\n    );\n  }\n\n  return (\n    <div className=\"mb-4\">\n      {displayLabel && label && (\n        <label htmlFor={id} className=\"mb-1.5 block text-sm font-medium leading-none\">\n          {label}\n          {required && <span className=\"text-destructive ml-0.5\">*</span>}\n        </label>\n      )}\n      {children}\n      {description && <div className=\"text-muted-foreground mt-1 text-xs\">{description}</div>}\n      {errors && <div className=\"text-destructive mt-1 text-xs\">{errors}</div>}\n    </div>\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/templates/object-template.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/templates/object-template.tsx",
+      "content": "import type { ObjectFieldTemplateProps } from '@rjsf/utils';\n\nexport const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {\n  const { title, description, properties } = props;\n\n  return (\n    <fieldset className=\"space-y-0\">\n      {title && <legend className=\"mb-4 text-lg font-semibold\">{title}</legend>}\n      {description && <div className=\"text-muted-foreground mb-4 text-sm\">{description}</div>}\n      {properties.map((prop) => (\n        <div key={prop.name}>{prop.content}</div>\n      ))}\n    </fieldset>\n  );\n};\n"
+    },
+    {
+      "path": "registry/form-renderer/templates/array-template.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/rjsf-form-builder/form-renderer/templates/array-template.tsx",
+      "content": "import type { ArrayFieldTemplateProps } from '@rjsf/utils';\n\nexport const ArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {\n  const { title, items, canAdd, onAddClick } = props;\n\n  return (\n    <div className=\"mb-4\">\n      {title && <h3 className=\"mb-2 text-sm font-medium\">{title}</h3>}\n      <div className=\"space-y-2\">{items}</div>\n      {canAdd && (\n        <button\n          type=\"button\"\n          className=\"border-border hover:bg-accent mt-2 rounded-md border px-3 py-1.5 text-sm\"\n          onClick={onAddClick}\n        >\n          Add Item\n        </button>\n      )}\n    </div>\n  );\n};\n"
+    }
+  ]
+}

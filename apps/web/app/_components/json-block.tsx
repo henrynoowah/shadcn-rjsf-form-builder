@@ -21,14 +21,10 @@ export default function JsonBlock({ value }: { value: unknown }) {
     };
   }, [json]);
 
-  if (html === null) {
-    return <pre className="text-xs font-mono whitespace-pre-wrap">{json}</pre>;
-  }
-
   return (
     <div
       className="shiki-wrapper text-xs [&_.shiki]:!rounded-none [&_.shiki]:p-0"
-      dangerouslySetInnerHTML={{ __html: html }}
+      dangerouslySetInnerHTML={{ __html: html ?? '' }}
     />
   );
 }

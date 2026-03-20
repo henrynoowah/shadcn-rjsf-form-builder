@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { IconCopy, IconCheck } from '@tabler/icons-react';
+import { Button } from '@/components/ui/button';
 
 export default function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -12,11 +14,14 @@ export default function CopyButton({ text }: { text: string }) {
   };
 
   return (
-    <button
+    <Button
+      variant="secondary"
+      size="icon"
       onClick={copy}
-      className="shrink-0 rounded border border-border px-2.5 py-1 font-mono text-[10px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      className="size-7"
+      aria-label={copied ? 'Copied' : 'Copy'}
     >
-      {copied ? 'copied!' : 'copy'}
-    </button>
+      {copied ? <IconCheck className="size-3.5" /> : <IconCopy className="size-3.5" />}
+    </Button>
   );
 }

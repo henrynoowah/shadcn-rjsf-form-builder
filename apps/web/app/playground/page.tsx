@@ -183,7 +183,7 @@ export default function PlaygroundPage() {
               </h2>
               <div className="rounded-lg border border-border p-6">
                 <FormRenderer
-                  schema={SAMPLE_SCHEMA}
+                  schema={builderSchema}
                   locale={locale}
                   baseLocale="en-US"
                   onSubmit={(data) => setSubmittedData(data)}
@@ -208,7 +208,7 @@ export default function PlaygroundPage() {
                 FormSchema
               </h2>
               <div className="rounded-lg border border-border bg-muted/30 max-h-96 overflow-auto">
-                <JsonBlock value={SAMPLE_SCHEMA} />
+                <JsonBlock value={builderSchema} />
               </div>
             </div>
           </div>

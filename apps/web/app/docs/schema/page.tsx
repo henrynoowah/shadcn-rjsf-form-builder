@@ -137,7 +137,20 @@ export default async function SchemaReferencePage() {
                 <td className="px-4 py-2 text-muted-foreground">string</td>
                 <td className="px-4 py-2 text-muted-foreground">Yes</td>
                 <td className="px-4 py-2 text-muted-foreground">
-                  Unique field key. Used as the form data key in the submitted object.
+                  Internal identifier for the field (used for selection/reordering in the builder).
+                  Falls back to this as the form data key when <code className="bg-muted px-1 py-0.5 rounded text-xs font-mono">key</code> is not set.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2">
+                  <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">key</code>
+                </td>
+                <td className="px-4 py-2 text-muted-foreground">string</td>
+                <td className="px-4 py-2 text-muted-foreground">No</td>
+                <td className="px-4 py-2 text-muted-foreground">
+                  Stable, human-readable property name used as the form data key in the submitted
+                  object and JSON Schema. Not applicable to display-only fields (heading, paragraph,
+                  separator).
                 </td>
               </tr>
               <tr>

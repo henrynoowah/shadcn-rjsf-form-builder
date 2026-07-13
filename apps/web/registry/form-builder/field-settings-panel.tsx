@@ -148,7 +148,7 @@ const ConditionEditor = ({
     } else {
       const firstField = watchableFields[0];
       if (firstField) {
-        onChange({ field: firstField.id, operator: 'eq', value: '' });
+        onChange({ field: firstField.key ?? firstField.id, operator: 'eq', value: '' });
       }
     }
   };
@@ -190,7 +190,7 @@ const ConditionEditor = ({
                         ? f.label
                         : Object.values(f.label)[0] ?? f.id;
                     return (
-                      <SelectItem key={f.id} value={f.id}>
+                      <SelectItem key={f.id} value={f.key ?? f.id}>
                         {label}
                       </SelectItem>
                     );
@@ -318,6 +318,17 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
           onChange={(label) => updateField(selectedField.id, { label })}
         />
       </div>
+
+      {!isDisplay && (
+        <div>
+          <label className="mb-1 block text-xs font-medium">Key</label>
+          <Input
+            value={selectedField.key ?? ''}
+            placeholder="field_key"
+            onChange={(e) => updateField(selectedField.id, { key: e.target.value })}
+          />
+        </div>
+      )}
 
       {!isDisplay && (
         <div>

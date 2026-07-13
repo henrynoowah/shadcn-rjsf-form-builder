@@ -23,7 +23,7 @@ export default function JsonBlock({ value }: { value: unknown }) {
 
   return (
     <div
-      className="shiki-wrapper text-xs [&_.shiki]:!rounded-none [&_.shiki]:p-0"
+      className="shiki-wrapper text-xs [&_.shiki]:!rounded-none [&_.shiki]:p-0 [&_.shiki]:whitespace-pre-wrap [&_.shiki]:break-words"
       dangerouslySetInnerHTML={{ __html: html ?? '' }}
     />
   );

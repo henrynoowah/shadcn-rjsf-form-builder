@@ -30,6 +30,8 @@ const fieldTypeToJsonSchema = (field: FormFieldDefinition, locale: string, baseL
   }
 };
 
+const fieldKey = (field: FormFieldDefinition): string => field.key ?? field.id;
+
 const applyValidation = (schema: RJSFSchema, field: FormFieldDefinition): RJSFSchema => {
   if (!field.validation) return schema;
 
@@ -55,7 +57,7 @@ export const toJsonSchema = (formSchema: FormSchema, locale: string, baseLocale?
     // Display fields use a null-type schema placeholder (rendered via custom UI field)
     if (isDisplayField(field.type)) {
       const localized = localizeFormField(field, locale, baseLocale);
-      properties[field.id] = {
+      properties[fieldKey(field)] = {
         type: 'null',
         title: localized.label,
         description: localized.description,
@@ -80,10 +82,10 @@ export const toJsonSchema = (formSchema: FormSchema, locale: string, baseLocale?
     }
 
     fieldSchema = applyValidation(fieldSchema, field);
-    properties[field.id] = fieldSchema;
+    properties[fieldKey(field)] = fieldSchema;
 
     if (field.required) {
-      required.push(field.id);
+      required.push(fieldKey(field));
     }
   }
 
@@ -108,7 +110,7 @@ export const toUiSchema = (formSchema: FormSchema, locale: string, baseLocale?: 
   const uiSchema: UiSchema = {};
   const sortedFields = [...formSchema.fields].sort((a, b) => a.order - b.order);
 
-  uiSchema['ui:order'] = sortedFields.map((f) => f.id);
+  uiSchema['ui:order'] = sortedFields.map((f) => fieldKey(f));
 
   for (const field of sortedFields) {
     const localized = localizeFormField(field, locale, baseLocale);
@@ -145,7 +147,7 @@ export const toUiSchema = (formSchema: FormSchema, locale: string, baseLocale?: 
     }
 
     if (Object.keys(fieldUi).length > 0) {
-      uiSchema[field.id] = fieldUi;
+      uiSchema[fieldKey(field)] = fieldUi;
     }
   }
 
@@ -231,7 +233,7 @@ export const applyConditions = (schema: RJSFSchema, fields: FormFieldDefinition[
 
     allOf.push({
       if: ifSchema,
-      then: { properties: { [field.id]: schema.properties?.[field.id] as RJSFSchema } },
+      then: { properties: { [fieldKey(field)]: schema.properties?.[fieldKey(field)] as RJSFSchema } },
       else: {},
     });
   }

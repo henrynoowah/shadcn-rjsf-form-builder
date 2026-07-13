@@ -58,6 +58,8 @@ export type FormFieldCondition = {
 
 export type FormFieldDefinition = {
   id: string;
+  /** Stable property name used as the JSON Schema key. Omitted for display-only fields. */
+  key?: string;
   type: FormFieldType;
   label: LocalizedString;
   placeholder?: LocalizedString;

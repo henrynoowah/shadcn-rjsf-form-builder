@@ -22,6 +22,7 @@ const SAMPLE_SCHEMA: FormSchema = {
     },
     {
       id: 'name',
+      key: 'full_name',
       type: 'text',
       label: { 'en-US': 'Full Name', 'ko-KR': '이름' },
       placeholder: { 'en-US': 'John Doe', 'ko-KR': '홍길동' },
@@ -30,6 +31,7 @@ const SAMPLE_SCHEMA: FormSchema = {
     },
     {
       id: 'email',
+      key: 'email',
       type: 'email',
       label: { 'en-US': 'Email Address', 'ko-KR': '이메일 주소' },
       placeholder: { 'en-US': 'john@example.com' },
@@ -38,6 +40,7 @@ const SAMPLE_SCHEMA: FormSchema = {
     },
     {
       id: 'topic',
+      key: 'topic',
       type: 'select',
       label: { 'en-US': 'Topic', 'ko-KR': '주제' },
       required: true,
@@ -57,6 +60,7 @@ const SAMPLE_SCHEMA: FormSchema = {
     },
     {
       id: 'message',
+      key: 'message',
       type: 'textarea',
       label: { 'en-US': 'Message', 'ko-KR': '메시지' },
       placeholder: { 'en-US': 'Tell us how we can help...' },
@@ -66,6 +70,7 @@ const SAMPLE_SCHEMA: FormSchema = {
     },
     {
       id: 'newsletter',
+      key: 'newsletter',
       type: 'checkbox',
       label: { 'en-US': 'Subscribe to newsletter', 'ko-KR': '뉴스레터 구독' },
       defaultValue: false,
@@ -196,11 +201,11 @@ export default function PlaygroundPage() {
               <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                 Submitted Data
               </h2>
-              <div className="rounded-lg border border-border bg-muted/30 p-4 min-h-40 overflow-auto">
+              <div className="rounded-lg border border-border bg-muted/30 overflow-auto">
                 {submittedData ? (
                   <JsonBlock value={submittedData} />
                 ) : (
-                  <p className="text-sm text-muted-foreground">Submit the form to see data here.</p>
+                  <p className="p-4 text-sm text-muted-foreground">Submit the form to see data here.</p>
                 )}
               </div>
 

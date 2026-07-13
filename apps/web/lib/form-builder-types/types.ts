@@ -53,6 +53,7 @@ export type FormFieldCondition = {
 
 export type FormFieldDefinition = {
   id: string;
+  key?: string;
   type: FormFieldType;
   label: LocalizedString;
   placeholder?: LocalizedString;

@@ -1,7 +1,18 @@
 import { createContext, useContext, useReducer, useCallback, useEffect, type ReactNode } from 'react';
 import { nanoid } from 'nanoid';
 import type { FormSchema, FormFieldDefinition, FormFieldType } from '@/lib/form-builder-types/types';
+import { isDisplayField } from '@/lib/form-builder-types/types';
 import { FIELD_TYPE_META } from './field-palette';
+
+const slugify = (label: string): string =>
+  label.toLowerCase().trim().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'field';
+
+const uniqueKey = (base: string, existingKeys: Set<string>): string => {
+  if (!existingKeys.has(base)) return base;
+  let i = 2;
+  while (existingKeys.has(`${base}_${i}`)) i++;
+  return `${base}_${i}`;
+};
 
 type BuilderState = {
   schema: FormSchema;
@@ -16,19 +27,28 @@ type BuilderAction =
   | { type: 'SELECT_FIELD'; payload: { fieldId: string | null } }
   | { type: 'UPDATE_SCHEMA'; payload: Partial<FormSchema> };
 
-const createDefaultField = (fieldType: FormFieldType, order: number): FormFieldDefinition => ({
-  id: nanoid(8),
-  type: fieldType,
-  label: { 'en-US': FIELD_TYPE_META[fieldType]?.label ?? fieldType },
-  order,
-  required: false,
-});
+const createDefaultField = (
+  fieldType: FormFieldType,
+  order: number,
+  existingKeys: Set<string>,
+): FormFieldDefinition => {
+  const label = FIELD_TYPE_META[fieldType]?.label ?? fieldType;
+  return {
+    id: nanoid(8),
+    ...(isDisplayField(fieldType) ? {} : { key: uniqueKey(slugify(label), existingKeys) }),
+    type: fieldType,
+    label: { 'en-US': label },
+    order,
+    required: false,
+  };
+};
 
 const builderReducer = (state: BuilderState, action: BuilderAction): BuilderState => {
   switch (action.type) {
     case 'ADD_FIELD': {
       const { fieldType, index } = action.payload;
-      const newField = createDefaultField(fieldType, index ?? state.schema.fields.length);
+      const existingKeys = new Set(state.schema.fields.map((f) => f.key).filter((k): k is string => !!k));
+      const newField = createDefaultField(fieldType, index ?? state.schema.fields.length, existingKeys);
 
       const fields = [...state.schema.fields];
       if (index !== undefined) {

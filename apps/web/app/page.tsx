@@ -93,13 +93,13 @@ export default async function Home() {
           {/* Project icon */}
           <div className="mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="h-10 w-10" aria-hidden="true">
-              <rect width="32" height="32" rx="7" className="fill-foreground" />
-              <circle cx="8" cy="12" r="1.25" className="fill-background" opacity="0.25" />
-              <circle cx="8" cy="16" r="1.25" className="fill-background" opacity="0.25" />
-              <circle cx="8" cy="20" r="1.25" className="fill-background" opacity="0.25" />
-              <rect x="12" y="10"  width="13" height="3" rx="1.5" className="fill-background" opacity="0.90" />
-              <rect x="12" y="14.5" width="10" height="3" rx="1.5" className="fill-background" opacity="0.55" />
-              <rect x="12" y="19"  width="7"  height="3" rx="1.5" className="fill-background" opacity="0.25" />
+              <rect width="32" height="32" rx="7" className="fill-primary" />
+              <circle cx="8" cy="12" r="1.25" className="fill-primary-foreground" opacity="0.25" />
+              <circle cx="8" cy="16" r="1.25" className="fill-primary-foreground" opacity="0.25" />
+              <circle cx="8" cy="20" r="1.25" className="fill-primary-foreground" opacity="0.25" />
+              <rect x="12" y="10"  width="13" height="3" rx="1.5" className="fill-primary-foreground" opacity="0.90" />
+              <rect x="12" y="14.5" width="10" height="3" rx="1.5" className="fill-primary-foreground" opacity="0.55" />
+              <rect x="12" y="19"  width="7"  height="3" rx="1.5" className="fill-primary-foreground" opacity="0.25" />
             </svg>
           </div>
 
@@ -124,7 +124,7 @@ export default async function Home() {
           <div className="flex flex-wrap items-center gap-3">
             <a
               href="/playground"
-              className="inline-flex items-center gap-2 rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-80"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-80"
             >
               View Demo
               <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 fill-current" aria-hidden="true">

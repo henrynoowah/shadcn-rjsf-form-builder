@@ -146,7 +146,7 @@ export default function PlaygroundPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`py-3 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === tab.id
-                    ? 'border-foreground text-foreground'
+                    ? 'border-primary text-foreground'
                     : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -166,7 +166,7 @@ export default function PlaygroundPage() {
                 onClick={() => setLocale(l)}
                 className={`rounded px-2.5 py-1 font-mono text-xs font-medium transition-colors ${
                   locale === l
-                    ? 'bg-foreground text-background'
+                    ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 }`}
               >

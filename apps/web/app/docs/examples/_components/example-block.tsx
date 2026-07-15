@@ -24,7 +24,7 @@ export default function ExampleBlock({
             onClick={() => setTab(t)}
             className={`px-4 py-2 text-xs font-medium capitalize transition-colors ${
               tab === t
-                ? 'border-b-2 border-foreground text-foreground'
+                ? 'border-b-2 border-primary text-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >

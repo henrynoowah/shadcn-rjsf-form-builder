@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { getRegistryItem, getAllRegistryItems } from '@/lib/registry';
@@ -16,7 +16,10 @@ export async function GET(
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  void redis?.incr(`downloads:${cleanName}`).catch(() => {});
+  const client = redis;
+  if (client) {
+    after(() => client.incr(`downloads:${cleanName}`).catch(() => {}));
+  }
 
   const { origin } = new URL(request.url);
   const localNames = new Set(getAllRegistryItems().map((i) => i.name));

@@ -1,5 +1,6 @@
 import { headers } from 'next/headers';
 import { getAllRegistryItems } from '@/lib/registry';
+import { redis } from '@/lib/redis';
 import InstallCard from './_components/install-card';
 import ThemeToggle from './_components/theme-toggle';
 
@@ -39,6 +40,9 @@ export default async function Home() {
   const items = getAllRegistryItems();
   const host = (await headers()).get('host');
   const registryBase = `https://${host}/r`;
+  const downloadCounts = redis
+    ? await redis.mget<number[]>(...items.map((item) => `downloads:${item.name}`))
+    : [];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -178,7 +182,7 @@ export default async function Home() {
           </div>
 
           <div className="space-y-4">
-            {items.map((item) => (
+            {items.map((item, i) => (
               <InstallCard
                 key={item.name}
                 name={item.name}
@@ -186,6 +190,7 @@ export default async function Home() {
                 cmd={`npx shadcn@latest add "${registryBase}/${item.name}.json"`}
                 typeBadge={TYPE_LABELS[item.type] ?? item.type}
                 dependencies={item.dependencies}
+                downloads={redis ? (downloadCounts[i] ?? 0) : undefined}
               />
             ))}
           </div>

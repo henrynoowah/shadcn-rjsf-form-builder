@@ -9,6 +9,7 @@ type Props = {
   note?: string;
   typeBadge?: string;
   dependencies?: string[];
+  downloads?: number;
 };
 
 export default async function InstallCard({
@@ -19,6 +20,7 @@ export default async function InstallCard({
   note,
   typeBadge,
   dependencies,
+  downloads,
 }: Props) {
   return (
     <div className="rounded-lg border border-border overflow-hidden">
@@ -33,6 +35,11 @@ export default async function InstallCard({
         {typeBadge && (
           <span className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
             {typeBadge}
+          </span>
+        )}
+        {downloads !== undefined && (
+          <span className="ml-auto font-mono text-[10px] text-muted-foreground">
+            ↓ {downloads.toLocaleString()}
           </span>
         )}
       </div>

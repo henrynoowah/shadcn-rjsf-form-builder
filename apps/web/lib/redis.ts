@@ -1,4 +1,5 @@
-import { Redis } from '@upstash/redis';
+// edge-safe build — this client also runs inside middleware.ts (Edge Runtime)
+import { Redis } from '@upstash/redis/cloudflare';
 
 // ponytail: Vercel's Upstash Marketplace integration names vary by version
 // (UPSTASH_REDIS_REST_* vs KV_REST_API_*) — support both instead of picking one

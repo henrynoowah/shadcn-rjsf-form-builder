@@ -1,9 +1,7 @@
+import { headers } from 'next/headers';
 import { getAllRegistryItems } from '@/lib/registry';
 import InstallCard from './_components/install-card';
 import ThemeToggle from './_components/theme-toggle';
-
-const REGISTRY_RAW_BASE =
-  'https://raw.githubusercontent.com/henrynoowah/shadcn-rjsf-form-builder/main/apps/web/public/r';
 
 const FEATURES = [
   {
@@ -39,6 +37,8 @@ const TYPE_LABELS: Record<string, string> = {
 
 export default async function Home() {
   const items = getAllRegistryItems();
+  const host = (await headers()).get('host');
+  const registryBase = `https://${host}/r`;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -183,7 +183,7 @@ export default async function Home() {
                 key={item.name}
                 name={item.name}
                 description={item.description ?? ''}
-                cmd={`npx shadcn@latest add "${REGISTRY_RAW_BASE}/${item.name}.json"`}
+                cmd={`npx shadcn@latest add "${registryBase}/${item.name}.json"`}
                 typeBadge={TYPE_LABELS[item.type] ?? item.type}
                 dependencies={item.dependencies}
               />

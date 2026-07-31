@@ -1,8 +1,7 @@
-import { NextResponse, after } from 'next/server';
+import { NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { getRegistryItem, getAllRegistryItems } from '@/lib/registry';
-import { redis } from '@/lib/redis';
 
 export async function GET(
   request: Request,
@@ -14,11 +13,6 @@ export async function GET(
 
   if (!item) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  }
-
-  const client = redis;
-  if (client) {
-    after(() => client.incr(`downloads:${cleanName}`).catch(() => {}));
   }
 
   const { origin } = new URL(request.url);

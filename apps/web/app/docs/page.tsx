@@ -1,8 +1,6 @@
+import { headers } from 'next/headers';
 import CodeBlock from '../_components/code-block';
 import InstallCard from '../_components/install-card';
-
-const REGISTRY_RAW_BASE =
-  'https://raw.githubusercontent.com/henrynoowah/shadcn-rjsf-form-builder/main/apps/web/public/r';
 
 const INSTALL_STEPS = [
   {
@@ -23,6 +21,9 @@ const INSTALL_STEPS = [
 ];
 
 export default async function DocsGetStarted() {
+  const host = (await headers()).get('host');
+  const registryBase = `https://${host}/r`;
+
   return (
     <div className="space-y-12">
       {/* Page header */}
@@ -120,7 +121,7 @@ export default async function DocsGetStarted() {
               name={step.name}
               description={step.description}
               note={step.note ?? undefined}
-              cmd={`npx shadcn@latest add "${REGISTRY_RAW_BASE}/${step.name}.json"`}
+              cmd={`npx shadcn@latest add "${registryBase}/${step.name}.json"`}
             />
           ))}
         </div>

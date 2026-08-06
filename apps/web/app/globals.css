@@ -31,6 +31,9 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --shadow-sm: var(--shadow-sm-value);
+  --shadow-md: var(--shadow-md-value);
+  --shadow-lg: var(--shadow-lg-value);
 }
 
 :root {
@@ -54,6 +57,12 @@
   --input: oklch(0.922 0 0);
   --ring: oklch(0.62 0.19 41);
   --radius: 0.625rem;
+  /* Plain runtime custom properties — @theme inline above maps Tailwind's
+     shadow tokens to these so shadow-sm/md/lg utilities stay override-able
+     per theme preset (Tailwind inlines a static literal otherwise). */
+  --shadow-sm-value: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md-value: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg-value: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 .dark {
@@ -76,6 +85,218 @@
   --border: oklch(0.325 0 0);
   --input: oklch(0.348 0 0);
   --ring: oklch(0.75 0.17 55);
+}
+
+/* Theme presets — toggled via data-theme-preset on <html>, see theme-preset-switcher.tsx.
+   Each preset restyles palette + --radius + --shadow-sm/md/lg, which is enough to reskin
+   every shadcn/RJSF component with zero component-file changes (Tailwind v4 emits --shadow-*
+   as real runtime vars, and hardcoded `rounded-*`/`shadow-*` classes already consume them). */
+
+/* Retro Terminal — phosphor CRT look, monospace, sharp corners, green glow instead of shadow */
+[data-theme-preset="terminal"] {
+  --background: oklch(0.94 0.03 145);
+  --foreground: oklch(0.3 0.08 145);
+  --card: oklch(0.96 0.02 145);
+  --card-foreground: oklch(0.3 0.08 145);
+  --popover: oklch(0.96 0.02 145);
+  --popover-foreground: oklch(0.3 0.08 145);
+  --primary: oklch(0.4 0.12 145);
+  --primary-foreground: oklch(0.96 0.03 145);
+  --secondary: oklch(0.9 0.04 145);
+  --secondary-foreground: oklch(0.3 0.08 145);
+  --muted: oklch(0.9 0.04 145);
+  --muted-foreground: oklch(0.45 0.08 145);
+  --accent: oklch(0.88 0.05 145);
+  --accent-foreground: oklch(0.3 0.08 145);
+  --border: oklch(0.6 0.1 145);
+  --input: oklch(0.6 0.1 145);
+  --ring: oklch(0.4 0.12 145);
+  --radius: 0rem;
+  --shadow-sm-value: 0 0 4px oklch(0.4 0.12 145 / 0.4);
+  --shadow-md-value: 0 0 10px oklch(0.4 0.12 145 / 0.45);
+  --shadow-lg-value: 0 0 18px oklch(0.4 0.12 145 / 0.5);
+  font-family: var(--font-mono);
+}
+.dark[data-theme-preset="terminal"] {
+  --background: oklch(0.1 0.02 145);
+  --foreground: oklch(0.85 0.19 145);
+  --card: oklch(0.13 0.03 145);
+  --card-foreground: oklch(0.85 0.19 145);
+  --popover: oklch(0.13 0.03 145);
+  --popover-foreground: oklch(0.85 0.19 145);
+  --primary: oklch(0.78 0.22 145);
+  --primary-foreground: oklch(0.08 0.02 145);
+  --secondary: oklch(0.18 0.04 145);
+  --secondary-foreground: oklch(0.85 0.19 145);
+  --muted: oklch(0.18 0.04 145);
+  --muted-foreground: oklch(0.55 0.14 145);
+  --accent: oklch(0.2 0.05 145);
+  --accent-foreground: oklch(0.85 0.19 145);
+  --border: oklch(0.35 0.1 145);
+  --input: oklch(0.35 0.1 145);
+  --ring: oklch(0.78 0.22 145);
+  --shadow-sm-value: 0 0 4px oklch(0.78 0.22 145 / 0.55);
+  --shadow-md-value: 0 0 10px oklch(0.78 0.22 145 / 0.6);
+  --shadow-lg-value: 0 0 18px oklch(0.78 0.22 145 / 0.65);
+}
+[data-theme-preset="terminal"] body {
+  position: relative;
+}
+[data-theme-preset="terminal"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    oklch(0.5 0.1 145 / 0.06) 0px,
+    oklch(0.5 0.1 145 / 0.06) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* Minimal — flat, near-monochrome, no depth */
+[data-theme-preset="minimal"] {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.145 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.98 0 0);
+  --secondary-foreground: oklch(0.145 0 0);
+  --muted: oklch(0.98 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --accent: oklch(0.98 0 0);
+  --accent-foreground: oklch(0.145 0 0);
+  --border: oklch(0.94 0 0);
+  --input: oklch(0.94 0 0);
+  --ring: oklch(0.145 0 0);
+  --radius: 0.25rem;
+  --shadow-sm-value: none;
+  --shadow-md-value: none;
+  --shadow-lg-value: none;
+  font-family: var(--font-sans);
+}
+.dark[data-theme-preset="minimal"] {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: oklch(0.96 0 0);
+  --primary-foreground: oklch(0.145 0 0);
+  --secondary: oklch(0.2 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+  --muted: oklch(0.2 0 0);
+  --muted-foreground: oklch(0.6 0 0);
+  --accent: oklch(0.2 0 0);
+  --accent-foreground: oklch(0.96 0 0);
+  --border: oklch(0.26 0 0);
+  --input: oklch(0.26 0 0);
+  --ring: oklch(0.96 0 0);
+  --shadow-sm-value: none;
+  --shadow-md-value: none;
+  --shadow-lg-value: none;
+}
+
+/* Neo-Brutalist — stark, hard-edged, sticker shadow */
+[data-theme-preset="brutalist"] {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0 0 0);
+  --primary: oklch(0.82 0.19 95);
+  --primary-foreground: oklch(0 0 0);
+  --secondary: oklch(0.94 0 0);
+  --secondary-foreground: oklch(0 0 0);
+  --muted: oklch(0.94 0 0);
+  --muted-foreground: oklch(0.3 0 0);
+  --accent: oklch(0.94 0 0);
+  --accent-foreground: oklch(0 0 0);
+  --border: oklch(0 0 0);
+  --input: oklch(0 0 0);
+  --ring: oklch(0 0 0);
+  --radius: 0rem;
+  --shadow-sm-value: 3px 3px 0 0 var(--border);
+  --shadow-md-value: 5px 5px 0 0 var(--border);
+  --shadow-lg-value: 8px 8px 0 0 var(--border);
+}
+.dark[data-theme-preset="brutalist"] {
+  --background: oklch(0 0 0);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0 0 0);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0 0 0);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(0.82 0.19 95);
+  --primary-foreground: oklch(0 0 0);
+  --secondary: oklch(0.16 0 0);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.16 0 0);
+  --muted-foreground: oklch(0.7 0 0);
+  --accent: oklch(0.16 0 0);
+  --accent-foreground: oklch(1 0 0);
+  --border: oklch(1 0 0);
+  --input: oklch(1 0 0);
+  --ring: oklch(1 0 0);
+  --shadow-sm-value: 3px 3px 0 0 var(--border);
+  --shadow-md-value: 5px 5px 0 0 var(--border);
+  --shadow-lg-value: 8px 8px 0 0 var(--border);
+}
+
+/* Playful — soft, bubbly, pastel, pill-shaped */
+[data-theme-preset="playful"] {
+  --background: oklch(0.99 0.01 330);
+  --foreground: oklch(0.32 0.05 330);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.32 0.05 330);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.32 0.05 330);
+  --primary: oklch(0.7 0.19 330);
+  --primary-foreground: oklch(0.99 0.01 330);
+  --secondary: oklch(0.95 0.03 330);
+  --secondary-foreground: oklch(0.32 0.05 330);
+  --muted: oklch(0.95 0.03 330);
+  --muted-foreground: oklch(0.55 0.05 330);
+  --accent: oklch(0.93 0.05 330);
+  --accent-foreground: oklch(0.32 0.05 330);
+  --border: oklch(0.9 0.05 330);
+  --input: oklch(0.9 0.05 330);
+  --ring: oklch(0.7 0.19 330);
+  --radius: 1.5rem;
+  --shadow-sm-value: 0 2px 8px 0 oklch(0.7 0.19 330 / 0.25);
+  --shadow-md-value: 0 6px 16px 0 oklch(0.7 0.19 330 / 0.3);
+  --shadow-lg-value: 0 12px 28px 0 oklch(0.7 0.19 330 / 0.35);
+}
+.dark[data-theme-preset="playful"] {
+  --background: oklch(0.22 0.03 330);
+  --foreground: oklch(0.96 0.02 330);
+  --card: oklch(0.27 0.04 330);
+  --card-foreground: oklch(0.96 0.02 330);
+  --popover: oklch(0.27 0.04 330);
+  --popover-foreground: oklch(0.96 0.02 330);
+  --primary: oklch(0.78 0.17 330);
+  --primary-foreground: oklch(0.22 0.03 330);
+  --secondary: oklch(0.32 0.05 330);
+  --secondary-foreground: oklch(0.96 0.02 330);
+  --muted: oklch(0.32 0.05 330);
+  --muted-foreground: oklch(0.7 0.05 330);
+  --accent: oklch(0.36 0.06 330);
+  --accent-foreground: oklch(0.96 0.02 330);
+  --border: oklch(0.4 0.06 330);
+  --input: oklch(0.4 0.06 330);
+  --ring: oklch(0.78 0.17 330);
+  --shadow-sm-value: 0 2px 8px 0 oklch(0 0 0 / 0.3);
+  --shadow-md-value: 0 6px 16px 0 oklch(0 0 0 / 0.35);
+  --shadow-lg-value: 0 12px 28px 0 oklch(0 0 0 / 0.4);
 }
 
 @layer base {

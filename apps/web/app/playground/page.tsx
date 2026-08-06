@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import ThemeToggle from '../_components/theme-toggle';
+import SiteHeader from '../_components/site-header';
+import ThemePresetSwitcher from '../_components/theme-preset-switcher';
 import JsonBlock from '../_components/json-block';
 import { FormRenderer } from '@/registry/form-renderer/form-renderer';
 import { FormBuilder } from '@/registry/form-builder/form-builder';
@@ -82,12 +82,6 @@ const SAMPLE_SCHEMA: FormSchema = {
 type Tab = 'renderer' | 'builder';
 type Locale = 'en-US' | 'ko-KR';
 
-const GITHUB_SVG = (
-  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
-    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" />
-  </svg>
-);
-
 export default function PlaygroundPage() {
   const [activeTab, setActiveTab] = useState<Tab>('renderer');
   const [locale, setLocale] = useState<Locale>('en-US');
@@ -96,45 +90,12 @@ export default function PlaygroundPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Nav — matches landing page and docs */}
-      <nav className="sticky top-0 z-50 border-b border-border bg-background/80 px-6 py-4 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="font-mono text-sm font-semibold tracking-tight hover:opacity-80"
-            >
-              shadcn-rjsf
-            </Link>
-            <span className="rounded-full border border-border px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
-              playground
-            </span>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/docs"
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Docs
-            </Link>
-            <ThemeToggle />
-            <a
-              href="https://github.com/henrynoowah/shadcn-rjsf-form-builder"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {GITHUB_SVG}
-              GitHub
-            </a>
-          </div>
-        </div>
-      </nav>
+      <SiteHeader badge="playground" links={[{ href: '/docs', label: 'Docs' }]} />
 
       {/* Subheader: tabs + locale switcher */}
       <div className="border-b border-border px-6">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <div className="flex gap-6">
+        <div className="mx-auto flex max-w-5xl flex-col gap-2 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-0 sm:py-0">
+          <div className="flex gap-6 overflow-x-auto">
             {(
               [
                 { id: 'renderer', label: 'Form Renderer' },
@@ -144,7 +105,7 @@ export default function PlaygroundPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-3 text-sm font-medium border-b-2 transition-colors ${
+                className={`whitespace-nowrap py-3 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === tab.id
                     ? 'border-primary text-foreground'
                     : 'border-transparent text-muted-foreground hover:text-foreground'
@@ -155,24 +116,27 @@ export default function PlaygroundPage() {
             ))}
           </div>
 
-          {/* Locale switcher */}
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest mr-1">
-              locale
-            </span>
-            {(['en-US', 'ko-KR'] as Locale[]).map((l) => (
-              <button
-                key={l}
-                onClick={() => setLocale(l)}
-                className={`rounded px-2.5 py-1 font-mono text-xs font-medium transition-colors ${
-                  locale === l
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
-              >
-                {l}
-              </button>
-            ))}
+          {/* Theme preset + locale switcher */}
+          <div className="flex flex-wrap items-center gap-3">
+            <ThemePresetSwitcher />
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest mr-1">
+                locale
+              </span>
+              {(['en-US', 'ko-KR'] as Locale[]).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLocale(l)}
+                  className={`rounded px-2.5 py-1 font-mono text-xs font-medium transition-colors ${
+                    locale === l
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  }`}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -15,9 +15,9 @@ A shadcn/ui registry for JSON Schema–driven forms with a drag-and-drop visual 
 ### 1. Install via shadcn CLI
 
 ```sh
-npx shadcn@latest add "<REGISTRY_URL>/r/form-builder-types"
-npx shadcn@latest add "<REGISTRY_URL>/r/form-renderer"
-npx shadcn@latest add "<REGISTRY_URL>/r/form-builder"
+npx shadcn@latest add "https://shadcn-rjsf-form-builder.noowah.dev/r/form-builder-types"
+npx shadcn@latest add "https://shadcn-rjsf-form-builder.noowah.dev/r/form-renderer"
+npx shadcn@latest add "https://shadcn-rjsf-form-builder.noowah.dev/r/form-builder"
 ```
 
 ### 2. Render a form

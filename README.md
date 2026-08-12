@@ -154,6 +154,6 @@ pnpm build        # build all packages
 
 ## Links
 
-- [Playground](https://shadcn-rjsf-form-builder.vercel.app/playground)
-- [Docs](https://shadcn-rjsf-form-builder.vercel.app/docs)
+- [Playground](https://shadcn-rjsf-form-builder.noowah.dev/playground)
+- [Docs](https://shadcn-rjsf-form-builder.noowah.dev/docs)
 - [GitHub](https://github.com/henrynoowah/shadcn-rjsf-form-builder)

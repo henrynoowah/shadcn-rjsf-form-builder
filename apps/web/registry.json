@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "shadcn-rjsf-form-builder",
-  "homepage": "https://github.com/henrynoowah/shadcn-rjsf-form-builder",
+  "homepage": "https://shadcn-rjsf-form-builder.noowah.dev",
   "items": [
     {
       "name": "form-builder-types",

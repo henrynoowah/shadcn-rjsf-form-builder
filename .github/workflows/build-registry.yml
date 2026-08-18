@@ -7,6 +7,7 @@ on:
       - 'apps/web/registry/**'
       - 'apps/web/registry.json'
       - 'scripts/build-registry.mjs'
+  workflow_dispatch: {}
 
 jobs:
   build:

@@ -6,7 +6,9 @@ on:
     paths:
       - 'apps/web/registry/**'
       - 'apps/web/registry.json'
+      - 'apps/web/changelog.json'
       - 'scripts/build-registry.mjs'
+      - 'scripts/changelog-md.mjs'
   workflow_dispatch: {}
 
 jobs:
@@ -32,4 +34,4 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'chore: regenerate static registry JSON'
-          file_pattern: 'apps/web/public/r/*.json'
+          file_pattern: 'apps/web/public/r/*.json CHANGELOG.md'

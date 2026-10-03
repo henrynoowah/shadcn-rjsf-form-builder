@@ -24,6 +24,18 @@ pnpm dev   # starts the Next.js app (registry server, docs, playground) at apps/
 
 Don't hand-edit files under `apps/web/public/r/` — they're generated. A CI workflow also regenerates and commits them automatically on push when registry-related paths change.
 
+## Releasing
+
+The registry has one version, shared by all items. `apps/web/changelog.json` is the source of truth: the docs changelog page, the RSS feed, `CHANGELOG.md`, the version comment in every installed file and the GitHub releases are all generated from it.
+
+1. Add a new entry at the **top** of `apps/web/changelog.json` with the version, date, a one-line summary and the changes (`feat`, `fix`, `breaking` or `docs`, plus the affected `items`).
+2. Run `pnpm build:registry` to restamp `apps/web/public/r/*.json` and regenerate `CHANGELOG.md`.
+3. Merge the PR. The Release workflow creates the `v<version>` tag and GitHub release on the merge commit.
+
+Use [SemVer](https://semver.org/). While we're on `0.x`, bump the minor version for breaking changes or notable features and the patch version for fixes. Changes that don't touch `apps/web/registry/` (site or docs only) don't need a release.
+
+To preview what the workflow will do: `node scripts/release.mjs --dry-run`.
+
 ## Before opening a PR
 
 ```sh

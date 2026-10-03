@@ -1,4 +1,5 @@
 import CodeBlock from './code-block';
+import Link from 'next/link';
 import CopyButton from './copy-button';
 
 type Props = {
@@ -10,6 +11,8 @@ type Props = {
   typeBadge?: string;
   dependencies?: string[];
   downloads?: number;
+  /** Current registry version, linked to the changelog. */
+  version?: string;
 };
 
 export default async function InstallCard({
@@ -21,6 +24,7 @@ export default async function InstallCard({
   typeBadge,
   dependencies,
   downloads,
+  version,
 }: Props) {
   return (
     <div className="rounded-lg border border-border overflow-hidden">
@@ -37,10 +41,20 @@ export default async function InstallCard({
             {typeBadge}
           </span>
         )}
-        {downloads !== undefined && (
-          <span className="ml-auto font-mono text-[10px] text-muted-foreground">
-            ↓ {downloads.toLocaleString()}
-          </span>
+        {(version || downloads !== undefined) && (
+          <div className="ml-auto flex items-center gap-3">
+            {version && (
+              <Link
+                href="/docs/changelog"
+                className="font-mono text-[10px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                v{version}
+              </Link>
+            )}
+            {downloads !== undefined && (
+              <span className="font-mono text-[10px] text-muted-foreground">↓ {downloads.toLocaleString()}</span>
+            )}
+          </div>
         )}
       </div>
 

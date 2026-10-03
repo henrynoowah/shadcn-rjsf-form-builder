@@ -1,0 +1,86 @@
+[
+  {
+    "version": "0.2.0",
+    "date": "2026-10-03",
+    "summary": "Correctness fixes for validators, conditional fields and builder locales, plus versioned registry output.",
+    "changes": [
+      {
+        "type": "fix",
+        "items": ["form-builder-types", "form-renderer"],
+        "text": "Custom validators registered with `registerValidator` now run automatically in `FormRenderer` and look up values by field `key` instead of `id`."
+      },
+      {
+        "type": "feat",
+        "items": ["form-renderer"],
+        "text": "`FormRenderer` accepts a `customValidate` prop for one-off validation, run after registered validators."
+      },
+      {
+        "type": "fix",
+        "items": ["form-builder-types", "form-renderer"],
+        "text": "Values of fields hidden by a condition are left out of `onChange` / `onSubmit` data. Chained conditions are evaluated against visible fields only, and values come back when a field is shown again."
+      },
+      {
+        "type": "feat",
+        "items": ["form-builder-types"],
+        "text": "New helpers: `fieldKey`, `getVisibleFields` and `pruneHiddenData`."
+      },
+      {
+        "type": "fix",
+        "items": ["form-builder"],
+        "text": "`FormBuilder` respects `baseLocale`: new field and option labels are created under it, and labels fall back to it on the canvas and in the condition editor."
+      },
+      {
+        "type": "fix",
+        "items": ["form-builder-types", "form-renderer", "form-builder"],
+        "text": "Registry dependencies resolve through the site domain instead of raw.githubusercontent.com."
+      },
+      {
+        "type": "feat",
+        "items": ["form-builder-types", "form-renderer", "form-builder"],
+        "text": "Installed files start with a version comment, and registry items include `meta.version`."
+      },
+      {
+        "type": "docs",
+        "text": "Added an API reference, an Updating guide, this changelog and an RSS feed. Settings that are not implemented yet are now marked as planned."
+      }
+    ]
+  },
+  {
+    "version": "0.1.0",
+    "date": "2026-08-18",
+    "commit": "44eaec7",
+    "summary": "First public release of the three registry items.",
+    "changes": [
+      {
+        "type": "feat",
+        "items": ["form-builder-types", "form-renderer", "form-builder"],
+        "text": "Initial registry items: `form-builder-types` (types, schema conversion, i18n, validators), `form-renderer` (RJSF renderer with shadcn/ui widgets) and `form-builder` (drag-and-drop builder)."
+      },
+      {
+        "type": "feat",
+        "items": ["form-builder-types", "form-renderer"],
+        "text": "13 field types, including display-only `heading`, `paragraph` and `separator`."
+      },
+      {
+        "type": "feat",
+        "items": ["form-builder-types"],
+        "text": "`LocalizedString` accepts a plain string or a locale-keyed map, with fallback to `baseLocale`."
+      },
+      {
+        "type": "feat",
+        "items": ["form-builder-types", "form-renderer", "form-builder"],
+        "text": "Conditional fields (`eq`, `neq`, `gt`, `lt`, `contains`, `empty`, `notEmpty`) evaluated against live form data, with a condition editor in the builder."
+      },
+      {
+        "type": "feat",
+        "items": ["form-builder-types", "form-builder"],
+        "text": "Optional `key` on fields for stable JSON Schema property names, generated from the label in the builder."
+      },
+      {
+        "type": "feat",
+        "items": ["form-builder-types"],
+        "text": "`registerValidator` / `createCustomValidator` API for named custom validation rules."
+      }
+    ]
+  }
+]

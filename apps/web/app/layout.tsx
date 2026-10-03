@@ -5,6 +5,9 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'shadcn RJSF Form Builder',
   description: 'shadcn registry for react-jsonschema-form components',
+  alternates: {
+    types: { 'application/rss+xml': [{ url: '/changelog.xml', title: 'shadcn-rjsf-form-builder releases' }] },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

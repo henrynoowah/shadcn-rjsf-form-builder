@@ -732,6 +732,13 @@ registerValidator('no-profanity', (value) => {
             </tbody>
           </table>
         </div>
+        <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+          Values of hidden fields are left out of the data passed to{' '}
+          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">onChange</code> and{' '}
+          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">onSubmit</code>. Conditions can chain: if
+          a field depends on one that is hidden, it is hidden too. When a field is shown again, the value the user
+          typed earlier comes back.
+        </p>
       </section>
 
       {/* Settings */}
@@ -744,7 +751,13 @@ registerValidator('no-profanity', (value) => {
             FormSchemaSettings
           </code>{' '}
           is an optional object on the root{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormSchema</code>.
+          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormSchema</code>. These fields are
+          part of the type, but <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormRenderer</code>{' '}
+          does not act on them yet. Track progress in the{' '}
+          <a href="/docs/changelog" className="text-foreground underline underline-offset-4">
+            changelog
+          </a>
+          .
         </p>
         <div className="overflow-x-auto">
           <table className="w-full border border-border text-sm">
@@ -760,6 +773,7 @@ registerValidator('no-profanity', (value) => {
               <tr>
                 <td className="px-4 py-2">
                   <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">layout</code>
+                  <span className="ml-1.5 rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">planned</span>
                 </td>
                 <td className="px-4 py-2 text-muted-foreground">"vertical" | "horizontal"</td>
                 <td className="px-4 py-2 text-muted-foreground">"vertical"</td>
@@ -772,6 +786,7 @@ registerValidator('no-profanity', (value) => {
                   <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">
                     showProgressBar
                   </code>
+                  <span className="ml-1.5 rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">planned</span>
                 </td>
                 <td className="px-4 py-2 text-muted-foreground">boolean</td>
                 <td className="px-4 py-2 text-muted-foreground">false</td>
@@ -784,6 +799,7 @@ registerValidator('no-profanity', (value) => {
                   <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">
                     successMessage
                   </code>
+                  <span className="ml-1.5 rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">planned</span>
                 </td>
                 <td className="px-4 py-2 text-muted-foreground">LocalizedString</td>
                 <td className="px-4 py-2 text-muted-foreground">—</td>

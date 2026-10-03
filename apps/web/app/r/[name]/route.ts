@@ -36,7 +36,7 @@ export async function GET(
   });
 
   return NextResponse.json(
-    { ...item, registryDependencies, files },
+    { $schema: 'https://ui.shadcn.com/schema/registry-item.json', ...item, registryDependencies, files },
     {
       headers: {
         'Access-Control-Allow-Origin': '*',

@@ -30,7 +30,8 @@ const fieldTypeToJsonSchema = (field: FormFieldDefinition, locale: string, baseL
   }
 };
 
-const fieldKey = (field: FormFieldDefinition): string => field.key ?? field.id;
+/** The property name a field's value is stored under in form data. */
+export const fieldKey = (field: FormFieldDefinition): string => field.key ?? field.id;
 
 const applyValidation = (schema: RJSFSchema, field: FormFieldDefinition): RJSFSchema => {
   if (!field.validation) return schema;
@@ -180,6 +181,44 @@ export const evaluateCondition = (
     default:         return true;
   }
 };
+
+/**
+ * Returns the fields whose conditions pass against the given form data.
+ * Values of hidden fields are ignored while evaluating, so chained conditions
+ * (B depends on A, A is hidden) resolve correctly.
+ */
+export const getVisibleFields = (
+  fields: FormFieldDefinition[],
+  formData: Record<string, unknown>,
+): FormFieldDefinition[] => {
+  let visible = fields;
+  for (let pass = 0; pass <= fields.length; pass++) {
+    const data = pruneData(fields, visible, formData);
+    const next = fields.filter((f) => evaluateCondition(f.condition, data));
+    if (next.length === visible.length && next.every((f, i) => f === visible[i])) return next;
+    visible = next;
+  }
+  return visible;
+};
+
+const pruneData = (
+  fields: FormFieldDefinition[],
+  visible: FormFieldDefinition[],
+  formData: Record<string, unknown>,
+): Record<string, unknown> => {
+  const visibleIds = new Set(visible.map((f) => f.id));
+  const data = { ...formData };
+  for (const field of fields) {
+    if (!visibleIds.has(field.id)) delete data[fieldKey(field)];
+  }
+  return data;
+};
+
+/** Removes values belonging to fields that are currently hidden by their condition. */
+export const pruneHiddenData = (
+  fields: FormFieldDefinition[],
+  formData: Record<string, unknown>,
+): Record<string, unknown> => pruneData(fields, getVisibleFields(fields, formData), formData);
 
 export const applyConditions = (schema: RJSFSchema, fields: FormFieldDefinition[]): RJSFSchema => {
   const fieldsWithConditions = fields.filter((f) => f.condition);

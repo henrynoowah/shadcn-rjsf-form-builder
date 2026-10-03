@@ -613,7 +613,7 @@ label: { "en-US": "Full Name", "ko-KR": "이름", "ja-JP": "氏名" }`}
           .
         </p>
         <CodeBlock
-          code={`import { registerValidator, createCustomValidator } from '@/lib/form-builder-types/validation';
+          code={`import { registerValidator } from '@/lib/form-builder-types/validation';
 
 // Register once (e.g. in a layout or provider)
 registerValidator('no-profanity', (value) => {
@@ -622,10 +622,13 @@ registerValidator('no-profanity', (value) => {
   }
 });
 
-// Pass the validator to FormRenderer
+// FormRenderer runs registered validators automatically for any field with
+// validation: { customRule: 'no-profanity' }.
+// For one-off checks, pass an RJSF customValidate function as well:
 <FormRenderer
   schema={schema}
-  customValidate={createCustomValidator(schema)}
+  locale="en-US"
+  customValidate={(formData, errors) => errors}
 />`}
         />
       </section>

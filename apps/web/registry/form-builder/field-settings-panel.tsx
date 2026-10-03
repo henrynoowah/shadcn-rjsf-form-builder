@@ -1,6 +1,7 @@
 import { useFormBuilder } from './builder-context';
 import type { LocalizedString, FormFieldOption, FormFieldCondition, FormFieldConditionOperator } from '@/lib/form-builder-types/types';
 import { FormFieldType, isDisplayField } from '@/lib/form-builder-types/types';
+import { localizeText } from '@/lib/form-builder-types/i18n';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -13,6 +14,7 @@ const NUMBER_RANGE_TYPES = new Set<string>(['number']);
 
 type FieldSettingsPanelProps = {
   locale: string;
+  baseLocale?: string;
   availableLocales?: string[];
 };
 
@@ -51,18 +53,23 @@ const LocalizedInput = ({
 const OptionsEditor = ({
   options,
   locale,
+  baseLocale,
   availableLocales,
   onChange,
 }: {
   options: FormFieldOption[];
   locale: string;
+  baseLocale?: string;
   availableLocales?: string[];
   onChange: (options: FormFieldOption[]) => void;
 }) => {
   const addOption = () => {
     onChange([
       ...options,
-      { value: `option_${options.length + 1}`, label: { [locale]: `Option ${options.length + 1}` } },
+      {
+        value: `option_${options.length + 1}`,
+        label: { [baseLocale ?? locale]: `Option ${options.length + 1}` },
+      },
     ]);
   };
 
@@ -125,10 +132,14 @@ const OPERATORS: { value: FormFieldConditionOperator; label: string; hasValue: b
 const ConditionEditor = ({
   condition,
   currentFieldId,
+  locale,
+  baseLocale,
   onChange,
 }: {
   condition: FormFieldCondition | undefined;
   currentFieldId: string;
+  locale: string;
+  baseLocale?: string;
   onChange: (condition: FormFieldCondition | undefined) => void;
 }) => {
   const { state } = useFormBuilder();
@@ -185,10 +196,7 @@ const ConditionEditor = ({
                 </SelectTrigger>
                 <SelectContent>
                   {watchableFields.map((f) => {
-                    const label =
-                      typeof f.label === 'string'
-                        ? f.label
-                        : Object.values(f.label)[0] ?? f.id;
+                    const label = localizeText(f.label, locale, baseLocale) || f.id;
                     return (
                       <SelectItem key={f.id} value={f.key ?? f.id}>
                         {label}
@@ -231,7 +239,7 @@ const ConditionEditor = ({
   );
 };
 
-export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPanelProps) => {
+export const FieldSettingsPanel = ({ locale, baseLocale, availableLocales }: FieldSettingsPanelProps) => {
   const { selectedField, updateField, state, updateSchema } = useFormBuilder();
   const { schema } = state;
 
@@ -374,6 +382,7 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
           <OptionsEditor
             options={selectedField.options ?? []}
             locale={locale}
+            baseLocale={baseLocale}
             availableLocales={availableLocales}
             onChange={(options) => updateField(selectedField.id, { options })}
           />
@@ -462,6 +471,8 @@ export const FieldSettingsPanel = ({ locale, availableLocales }: FieldSettingsPa
           <ConditionEditor
             condition={selectedField.condition}
             currentFieldId={selectedField.id}
+            locale={locale}
+            baseLocale={baseLocale}
             onChange={(condition) => updateField(selectedField.id, { condition })}
           />
         </div>

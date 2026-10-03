@@ -135,6 +135,8 @@ A field is shown only when its `condition` evaluates to `true` against live form
 
 Supported operators: `eq`, `neq`, `gt`, `lt`, `contains`, `empty`, `notEmpty`.
 
+Values of hidden fields are left out of the data passed to `onChange` and `onSubmit`.
+
 ## Development
 
 This is a [Turborepo](https://turbo.build/) monorepo.

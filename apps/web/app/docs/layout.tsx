@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import SiteHeader from '../_components/site-header';
+import { getChangelog, versionAnchor } from '@/lib/changelog';
 
 type Section = { label: string; hash: string };
 
@@ -23,6 +24,7 @@ const NAV_ITEMS: NavItem[] = [
       { label: 'Quick Start: FormRenderer', hash: 'quick-start-formrenderer' },
       { label: 'Quick Start: FormBuilder', hash: 'quick-start-formbuilder' },
       { label: 'Locale Setup', hash: 'locale-setup' },
+      { label: 'Updating', hash: 'updating' },
     ],
   },
   {
@@ -39,6 +41,16 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
+    label: 'API Reference',
+    href: '/docs/api',
+    sections: [
+      { label: 'FormRenderer', hash: 'formrenderer' },
+      { label: 'FormBuilder', hash: 'formbuilder' },
+      { label: 'Validation helpers', hash: 'validation-helpers' },
+      { label: 'Schema helpers', hash: 'schema-helpers' },
+    ],
+  },
+  {
     label: 'Examples',
     href: '/docs/examples',
     sections: [
@@ -48,6 +60,11 @@ const NAV_ITEMS: NavItem[] = [
       { label: 'Custom Validation', hash: 'custom-validation' },
       { label: 'Controlled FormBuilder', hash: 'controlled-formbuilder' },
     ],
+  },
+  {
+    label: 'Changelog',
+    href: '/docs/changelog',
+    sections: getChangelog().map((entry) => ({ label: `v${entry.version}`, hash: versionAnchor(entry.version) })),
   },
 ];
 

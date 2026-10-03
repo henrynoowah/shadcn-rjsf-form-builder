@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import CodeBlock from '../_components/code-block';
 import InstallCard from '../_components/install-card';
+import { getLatestRelease, versionHeader } from '@/lib/changelog';
 
 const INSTALL_STEPS = [
   {
@@ -23,6 +24,7 @@ const INSTALL_STEPS = [
 export default async function DocsGetStarted() {
   const host = (await headers()).get('host');
   const registryBase = `https://${host}/r`;
+  const latest = getLatestRelease();
 
   return (
     <div className="space-y-12">
@@ -122,6 +124,7 @@ export default async function DocsGetStarted() {
               description={step.description}
               note={step.note ?? undefined}
               cmd={`npx shadcn@latest add "${registryBase}/${step.name}.json"`}
+              version={latest.version}
             />
           ))}
         </div>
@@ -232,6 +235,32 @@ export default function BuilderPage() {
         <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
           If a <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">LocalizedString</code> is a plain string
           (not a locale map), it is always used as-is regardless of the active locale.
+        </p>
+      </section>
+
+      {/* Updating */}
+      <section>
+        <h2 id="updating" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Updating</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+          Registry items are copied into your project, so updates are not automatic. Every installed file starts with a
+          comment naming the version it came from:
+        </p>
+        <CodeBlock code={versionHeader(latest.version, `https://${host}`).trimEnd()} lang="ts" />
+        <p className="text-sm text-muted-foreground leading-relaxed my-4">
+          Compare it with the latest release (<strong className="text-foreground">v{latest.version}</strong>) and read
+          the{' '}
+          <a href="/docs/changelog" className="text-foreground underline underline-offset-4">
+            changelog
+          </a>{' '}
+          for what changed. To update, install again with <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">--overwrite</code>:
+        </p>
+        <CodeBlock
+          lang="sh"
+          code={INSTALL_STEPS.map((step) => `npx shadcn@latest add "${registryBase}/${step.name}.json" --overwrite`).join('\n')}
+        />
+        <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+          This replaces the files in place. If you edited them, review the result with{' '}
+          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">git diff</code> and re-apply your changes.
         </p>
       </section>
     </div>

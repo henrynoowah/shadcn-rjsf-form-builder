@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import { getAllRegistryItems } from '@/lib/registry';
 import { redis } from '@/lib/redis';
+import { getLatestRelease } from '@/lib/changelog';
 import InstallCard from './_components/install-card';
 import SiteHeader from './_components/site-header';
 
@@ -38,6 +39,7 @@ const TYPE_LABELS: Record<string, string> = {
 
 export default async function Home() {
   const items = getAllRegistryItems();
+  const latest = getLatestRelease();
   const host = (await headers()).get('host');
   const registryBase = `https://${host}/r`;
   const downloadCounts = redis
@@ -149,6 +151,12 @@ export default async function Home() {
               Install
             </span>
             <div className="h-px flex-1 bg-border" />
+            <a
+              href="/docs/changelog"
+              className="font-mono text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+            >
+              v{latest.version} · {latest.date} · changelog →
+            </a>
           </div>
 
           <div className="space-y-4">
@@ -161,6 +169,7 @@ export default async function Home() {
                 typeBadge={TYPE_LABELS[item.type] ?? item.type}
                 dependencies={item.dependencies}
                 downloads={redis ? (downloadCounts[i] ?? 0) : undefined}
+                version={latest.version}
               />
             ))}
           </div>

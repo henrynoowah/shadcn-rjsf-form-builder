@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { getRegistryItem, getAllRegistryItems } from '@/lib/registry';
+import { getLatestRelease, versionHeader } from '@/lib/changelog';
 
 export async function GET(
   request: Request,
@@ -23,10 +24,13 @@ export async function GET(
     return localNames.has(dep) ? `${origin}/r/${dep}.json` : dep;
   });
 
+  const { version } = getLatestRelease();
+  const header = versionHeader(version, origin);
+
   const files = item.files.map((file) => {
     const relativePath = file.path.replace('registry/', '');
     const absolutePath = join(process.cwd(), 'registry', relativePath);
-    const content = readFileSync(absolutePath, 'utf-8');
+    const content = header + readFileSync(absolutePath, 'utf-8');
     return {
       path: file.path,
       type: file.type,
@@ -36,7 +40,14 @@ export async function GET(
   });
 
   return NextResponse.json(
-    { $schema: 'https://ui.shadcn.com/schema/registry-item.json', ...item, registryDependencies, files },
+    {
+      $schema: 'https://ui.shadcn.com/schema/registry-item.json',
+      ...item,
+      registryDependencies,
+      files,
+      docs: `Installed ${item.name} v${version}. Release notes: ${origin}/docs/changelog`,
+      meta: { version },
+    },
     {
       headers: {
         'Access-Control-Allow-Origin': '*',

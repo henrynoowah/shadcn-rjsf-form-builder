@@ -137,6 +137,16 @@ Supported operators: `eq`, `neq`, `gt`, `lt`, `contains`, `empty`, `notEmpty`.
 
 Values of hidden fields are left out of the data passed to `onChange` and `onSubmit`.
 
+## Releases & Updating
+
+All three items share one version. Release notes are published in three places:
+
+- [Changelog](https://shadcn-rjsf-form-builder.noowah.dev/docs/changelog) on the docs site ([RSS](https://shadcn-rjsf-form-builder.noowah.dev/changelog.xml))
+- [GitHub Releases](https://github.com/henrynoowah/shadcn-rjsf-form-builder/releases). Use **Watch → Custom → Releases** to get notified.
+- [`CHANGELOG.md`](./CHANGELOG.md)
+
+Every installed file starts with a comment naming its version, e.g. `// shadcn-rjsf-form-builder v0.2.0 — …`. To update, re-run the install command with `--overwrite` and review the result with `git diff`.
+
 ## Development
 
 This is a [Turborepo](https://turbo.build/) monorepo.
@@ -158,4 +168,5 @@ pnpm build        # build all packages
 
 - [Playground](https://shadcn-rjsf-form-builder.noowah.dev/playground)
 - [Docs](https://shadcn-rjsf-form-builder.noowah.dev/docs)
+- [Changelog](https://shadcn-rjsf-form-builder.noowah.dev/docs/changelog)
 - [GitHub](https://github.com/henrynoowah/shadcn-rjsf-form-builder)

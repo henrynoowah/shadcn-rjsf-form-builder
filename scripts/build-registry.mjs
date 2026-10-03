@@ -1,7 +1,7 @@
 /**
  * Generates static registry JSON files for each item in registry.json.
- * Output goes to apps/web/public/r/<name>.json so they can be served via
- * raw.githubusercontent.com without a running server.
+ * Output goes to apps/web/public/r/<name>.json, which the site serves statically.
+ * Local registryDependencies point back at the site so installs stay on our domain.
  *
  * Usage: node scripts/build-registry.mjs
  */
@@ -14,10 +14,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const WEB = join(ROOT, 'apps/web');
 
-const GITHUB_RAW_BASE =
-  'https://raw.githubusercontent.com/henrynoowah/shadcn-rjsf-form-builder/main/apps/web/public/r';
-
 const registry = JSON.parse(readFileSync(join(WEB, 'registry.json'), 'utf-8'));
+const REGISTRY_BASE = `${registry.homepage.replace(/\/$/, '')}/r`;
 const localNames = new Set(registry.items.map((item) => item.name));
 
 const outDir = join(WEB, 'public/r');
@@ -26,7 +24,7 @@ mkdirSync(outDir, { recursive: true });
 for (const item of registry.items) {
   const registryDependencies = (item.registryDependencies ?? []).map((dep) => {
     if (dep.startsWith('http')) return dep;
-    return localNames.has(dep) ? `${GITHUB_RAW_BASE}/${dep}.json` : dep;
+    return localNames.has(dep) ? `${REGISTRY_BASE}/${dep}.json` : dep;
   });
 
   const files = item.files.map((file) => {
@@ -41,7 +39,7 @@ for (const item of registry.items) {
     };
   });
 
-  const output = { ...item, registryDependencies, files };
+  const output = { $schema: 'https://ui.shadcn.com/schema/registry-item.json', ...item, registryDependencies, files };
   const outPath = join(outDir, `${item.name}.json`);
   writeFileSync(outPath, JSON.stringify(output, null, 2));
   console.log(`✓ ${item.name}.json`);

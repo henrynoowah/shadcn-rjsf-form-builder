@@ -224,7 +224,7 @@ export default function BuilderPage() {
               <tr>
                 <td className="px-4 py-2"><code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">baseLocale</code></td>
                 <td className="px-4 py-2 text-muted-foreground">string</td>
-                <td className="px-4 py-2 text-muted-foreground">Fallback locale when the active locale has no translation for a string.</td>
+                <td className="px-4 py-2 text-muted-foreground">Fallback locale when the active locale has no translation for a string. In FormBuilder, new field and option labels are created under this locale.</td>
               </tr>
             </tbody>
           </table>

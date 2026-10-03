@@ -31,10 +31,12 @@ type ActiveDrag = { source: 'palette'; fieldType: FormFieldType } | { source: 'c
 
 const BuilderInner = ({
   locale,
+  baseLocale,
   availableLocales,
   className,
 }: {
   locale: string;
+  baseLocale?: string;
   availableLocales?: string[];
   className?: string;
 }) => {
@@ -92,19 +94,19 @@ const BuilderInner = ({
           onDragCancel={handleDragCancel}
         >
           <FieldPalette />
-          <Canvas locale={locale} />
+          <Canvas locale={locale} baseLocale={baseLocale} />
           <DragOverlay dropAnimation={null}>
             {activeDrag?.source === 'palette' && <PaletteOverlayItem fieldType={activeDrag.fieldType} />}
             {activeDrag?.source === 'canvas' && (
               <CanvasFieldOverlay
-                label={localizeText(activeDrag.field.label, locale) || activeDrag.field.type}
+                label={localizeText(activeDrag.field.label, locale, baseLocale) || activeDrag.field.type}
                 type={activeDrag.field.type}
                 required={activeDrag.field.required}
               />
             )}
           </DragOverlay>
         </DndContext>
-        <FieldSettingsPanel locale={locale} availableLocales={availableLocales} />
+        <FieldSettingsPanel locale={locale} baseLocale={baseLocale} availableLocales={availableLocales} />
       </div>
     </div>
   );
@@ -114,12 +116,18 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
   initialSchema,
   onChange,
   locale,
+  baseLocale,
   availableLocales,
   className,
 }) => {
   return (
-    <BuilderProvider initialSchema={initialSchema} onChange={onChange}>
-      <BuilderInner locale={locale} availableLocales={availableLocales} className={className} />
+    <BuilderProvider initialSchema={initialSchema} onChange={onChange} defaultLocale={baseLocale ?? locale}>
+      <BuilderInner
+        locale={locale}
+        baseLocale={baseLocale}
+        availableLocales={availableLocales}
+        className={className}
+      />
     </BuilderProvider>
   );
 };

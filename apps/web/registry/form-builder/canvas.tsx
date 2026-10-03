@@ -5,9 +5,10 @@ import { CanvasField } from './canvas-field';
 
 type CanvasProps = {
   locale: string;
+  baseLocale?: string;
 };
 
-export const Canvas = ({ locale }: CanvasProps) => {
+export const Canvas = ({ locale, baseLocale }: CanvasProps) => {
   const { state } = useFormBuilder();
   const { fields } = state.schema;
   const sortedFields = [...fields].sort((a, b) => a.order - b.order);
@@ -24,7 +25,7 @@ export const Canvas = ({ locale }: CanvasProps) => {
         <SortableContext items={sortedFields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-2">
             {sortedFields.map((field) => (
-              <CanvasField key={field.id} field={field} locale={locale} />
+              <CanvasField key={field.id} field={field} locale={locale} baseLocale={baseLocale} />
             ))}
           </div>
         </SortableContext>

@@ -208,7 +208,7 @@ const schema: FormSchema = {
 // ---- Custom validators (registerValidator API) ----
 // Register once at app startup, then reference by key in validation.customRule
 
-import { registerValidator, createCustomValidator } from '@/lib/form-builder-types/validation';
+import { registerValidator } from '@/lib/form-builder-types/validation';
 
 registerValidator('no-free-email', (value) => {
   const freeProviders = ['gmail.com', 'yahoo.com', 'hotmail.com'];
@@ -221,8 +221,7 @@ registerValidator('no-free-email', (value) => {
 // Reference by key in any field's validation.customRule:
 // validation: { customRule: 'no-free-email' }
 //
-// Then pass the validator to FormRenderer:
-// customValidate={createCustomValidator(schema)}`;
+// FormRenderer runs registered validators automatically.`;
 
 const BUILDER_CODE = `'use client';
 

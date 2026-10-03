@@ -3,8 +3,10 @@ import { withTheme } from '@rjsf/core';
 import type { ThemeProps } from '@rjsf/core';
 import validator from '@rjsf/validator-ajv8';
 import type { IChangeEvent } from '@rjsf/core';
+import type { CustomValidator } from '@rjsf/utils';
 import type { FormSchema } from '@/lib/form-builder-types/types';
-import { toJsonSchema, toUiSchema, evaluateCondition } from '@/lib/form-builder-types/schema-builder';
+import { toJsonSchema, toUiSchema, getVisibleFields, pruneHiddenData } from '@/lib/form-builder-types/schema-builder';
+import { createCustomValidator } from '@/lib/form-builder-types/validation';
 import { localizeString } from '@/lib/form-builder-types/i18n';
 import { formBuilderTheme } from './theme';
 
@@ -22,6 +24,8 @@ export type FormRendererProps = {
   theme?: Partial<ThemeProps>;
   /** Replace the submit button with a custom element */
   submitButton?: React.ReactNode;
+  /** Extra validation, run after any validators registered via `registerValidator`. */
+  customValidate?: CustomValidator;
 };
 
 export const FormRenderer: React.FC<FormRendererProps> = ({
@@ -36,13 +40,14 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
   disabled,
   theme: themeOverride,
   submitButton,
+  customValidate,
 }) => {
   // Track live form data so we can evaluate conditions and hide/show fields dynamically.
   const [liveData, setLiveData] = useState<Record<string, unknown>>(externalFormData ?? {});
 
   const visibleSchema = useMemo<FormSchema>(() => ({
     ...schema,
-    fields: schema.fields.filter((f) => evaluateCondition(f.condition, liveData)),
+    fields: getVisibleFields(schema.fields, liveData),
   }), [schema, liveData]);
 
   const jsonSchema = useMemo(() => toJsonSchema(visibleSchema, locale, baseLocale), [visibleSchema, locale, baseLocale]);
@@ -60,6 +65,14 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
 
   const ThemedForm = useMemo(() => withTheme(mergedTheme), [mergedTheme]);
 
+  const validate = useMemo<CustomValidator>(() => {
+    const registered = createCustomValidator(visibleSchema);
+    return (data, errors, ...rest) => {
+      const result = registered(data, errors, ...rest);
+      return customValidate ? customValidate(data, result, ...rest) : result;
+    };
+  }, [visibleSchema, customValidate]);
+
   return (
     <div className={className} data-testid="form-renderer">
       <ThemedForm
@@ -68,11 +81,12 @@ export const FormRenderer: React.FC<FormRendererProps> = ({
         validator={validator}
         formData={externalFormData ?? liveData}
         disabled={disabled}
+        customValidate={validate}
         onChange={(e: IChangeEvent) => {
           setLiveData(e.formData);
-          onChange?.(e.formData);
+          onChange?.(pruneHiddenData(schema.fields, e.formData));
         }}
-        onSubmit={(e: IChangeEvent) => onSubmit?.(e.formData)}
+        onSubmit={(e: IChangeEvent) => onSubmit?.(pruneHiddenData(schema.fields, e.formData))}
         onError={(errors: unknown[]) => onError?.(errors)}
       >
         {submitButton ?? (

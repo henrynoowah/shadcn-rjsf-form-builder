@@ -20,7 +20,7 @@ type BuilderState = {
 };
 
 type BuilderAction =
-  | { type: 'ADD_FIELD'; payload: { fieldType: FormFieldType; index?: number } }
+  | { type: 'ADD_FIELD'; payload: { fieldType: FormFieldType; index?: number; labelLocale: string } }
   | { type: 'REMOVE_FIELD'; payload: { fieldId: string } }
   | { type: 'UPDATE_FIELD'; payload: { fieldId: string; updates: Partial<FormFieldDefinition> } }
   | { type: 'REORDER_FIELDS'; payload: { activeId: string; overId: string } }
@@ -31,13 +31,14 @@ const createDefaultField = (
   fieldType: FormFieldType,
   order: number,
   existingKeys: Set<string>,
+  labelLocale: string,
 ): FormFieldDefinition => {
   const label = FIELD_TYPE_META[fieldType]?.label ?? fieldType;
   return {
     id: nanoid(8),
     ...(isDisplayField(fieldType) ? {} : { key: uniqueKey(slugify(label), existingKeys) }),
     type: fieldType,
-    label: { 'en-US': label },
+    label: { [labelLocale]: label },
     order,
     required: false,
   };
@@ -46,9 +47,14 @@ const createDefaultField = (
 const builderReducer = (state: BuilderState, action: BuilderAction): BuilderState => {
   switch (action.type) {
     case 'ADD_FIELD': {
-      const { fieldType, index } = action.payload;
+      const { fieldType, index, labelLocale } = action.payload;
       const existingKeys = new Set(state.schema.fields.map((f) => f.key).filter((k): k is string => !!k));
-      const newField = createDefaultField(fieldType, index ?? state.schema.fields.length, existingKeys);
+      const newField = createDefaultField(
+        fieldType,
+        index ?? state.schema.fields.length,
+        existingKeys,
+        labelLocale,
+      );
 
       const fields = [...state.schema.fields];
       if (index !== undefined) {
@@ -149,10 +155,17 @@ const DEFAULT_SCHEMA: FormSchema = {
 export type BuilderProviderProps = {
   initialSchema?: FormSchema;
   onChange?: (schema: FormSchema) => void;
+  /** Locale that new field labels are created under. Defaults to 'en-US'. */
+  defaultLocale?: string;
   children: ReactNode;
 };
 
-export const BuilderProvider: React.FC<BuilderProviderProps> = ({ initialSchema, onChange, children }) => {
+export const BuilderProvider: React.FC<BuilderProviderProps> = ({
+  initialSchema,
+  onChange,
+  defaultLocale = 'en-US',
+  children,
+}) => {
   const [state, dispatch] = useReducer(builderReducer, {
     schema: initialSchema ?? DEFAULT_SCHEMA,
     selectedFieldId: null,
@@ -160,9 +173,12 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({ initialSchema,
 
   const notifyChange = useCallback((newState: BuilderState) => onChange?.(newState.schema), [onChange]);
 
-  const addField = useCallback((fieldType: FormFieldType, index?: number) => {
-    dispatch({ type: 'ADD_FIELD', payload: { fieldType, index } });
-  }, []);
+  const addField = useCallback(
+    (fieldType: FormFieldType, index?: number) => {
+      dispatch({ type: 'ADD_FIELD', payload: { fieldType, index, labelLocale: defaultLocale } });
+    },
+    [defaultLocale],
+  );
 
   const removeField = useCallback((fieldId: string) => dispatch({ type: 'REMOVE_FIELD', payload: { fieldId } }), []);
 

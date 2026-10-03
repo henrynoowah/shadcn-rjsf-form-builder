@@ -24,9 +24,10 @@ export const CanvasFieldOverlay = ({ label, type, required }: { label: string; t
 type CanvasFieldProps = {
   field: FormFieldDefinition;
   locale: string;
+  baseLocale?: string;
 };
 
-export const CanvasField = ({ field, locale }: CanvasFieldProps) => {
+export const CanvasField = ({ field, locale, baseLocale }: CanvasFieldProps) => {
   const { selectField, removeField, state } = useFormBuilder();
   const isSelected = state.selectedFieldId === field.id;
 
@@ -40,7 +41,7 @@ export const CanvasField = ({ field, locale }: CanvasFieldProps) => {
     transition,
   };
 
-  const label = localizeText(field.label, locale) || field.type;
+  const label = localizeText(field.label, locale, baseLocale) || field.type;
 
   return (
     <div

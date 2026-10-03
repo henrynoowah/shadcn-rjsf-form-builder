@@ -1,5 +1,6 @@
 import type { CustomValidator, FormValidation } from '@rjsf/utils';
 import type { FormSchema } from './types';
+import { fieldKey } from './schema-builder';
 
 type ValidatorFn = (value: unknown, formData: Record<string, unknown>) => string | undefined;
 
@@ -22,11 +23,12 @@ export const createCustomValidator = (formSchema: FormSchema): CustomValidator =
       const validator = customValidators.get(customRule);
       if (!validator) continue;
 
-      const value = formData[field.id];
-      const error = validator(value, formData);
+      const key = fieldKey(field);
+      const value = formData?.[key];
+      const error = validator(value, formData ?? {});
 
       if (error) {
-        (errors as any)[field.id]?.addError(error);
+        (errors as any)[key]?.addError(error);
       }
     }
 

@@ -1,0 +1,58 @@
+name: Bug report
+description: Something is broken or renders incorrectly.
+title: '[bug]: '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to report a bug! A minimal JSON Schema that reproduces it helps a lot.
+  - type: dropdown
+    id: item
+    attributes:
+      label: Registry item
+      description: Which part of the project is affected?
+      options:
+        - form-renderer
+        - form-builder
+        - form-builder-types
+        - docs / site
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Registry version
+      description: Found in the first line of any installed file, e.g. `// shadcn-rjsf-form-builder v0.2.0`.
+      placeholder: v0.2.0
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What did you expect to happen, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: schema
+    attributes:
+      label: JSON Schema / FormSchema to reproduce
+      description: The smallest schema (and uiSchema, if relevant) that shows the problem.
+      render: json
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Render the schema above
+        2. Click on ...
+        3. See error
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: React, Next.js, shadcn and @rjsf versions, browser.
+      placeholder: |
+        - React: 19.x
+        - Next.js: 15.x
+        - @rjsf/core: 6.x
+        - Browser: Chrome 130

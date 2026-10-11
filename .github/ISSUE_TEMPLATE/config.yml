@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://shadcn-rjsf-form-builder.noowah.dev/docs
+    about: Setup guides, schema reference and API docs.
+  - name: Playground
+    url: https://shadcn-rjsf-form-builder.noowah.dev/playground
+    about: Try the builder and renderer in the browser.

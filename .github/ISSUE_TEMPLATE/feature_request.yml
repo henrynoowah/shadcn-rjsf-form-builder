@@ -1,0 +1,36 @@
+name: Feature request
+description: Suggest a new widget, field type, builder option or improvement.
+title: '[feature]: '
+labels: ['enhancement']
+body:
+  - type: dropdown
+    id: item
+    attributes:
+      label: Registry item
+      description: Which part of the project would this change?
+      options:
+        - form-renderer
+        - form-builder
+        - form-builder-types
+        - docs / site
+        - New item
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to do, and what makes it hard today?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you like it to work? Example schemas or API sketches are welcome.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds you're using now, or other approaches you've thought about.

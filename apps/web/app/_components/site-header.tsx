@@ -5,9 +5,8 @@ import Link from 'next/link';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Menu01Icon } from '@hugeicons/core-free-icons';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { GITHUB_URL } from '@/lib/site';
 import ThemeToggle from './theme-toggle';
-
-const GITHUB_URL = 'https://github.com/henrynoowah/shadcn-rjsf-form-builder';
 
 const GITHUB_SVG = (
   <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">

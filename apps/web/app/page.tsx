@@ -1,7 +1,10 @@
 import { headers } from 'next/headers';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Bug01Icon, Idea01Icon, StarIcon } from '@hugeicons/core-free-icons';
 import { getAllRegistryItems } from '@/lib/registry';
 import { redis } from '@/lib/redis';
 import { getLatestRelease } from '@/lib/changelog';
+import { GITHUB_URL } from '@/lib/site';
 import InstallCard from './_components/install-card';
 import SiteHeader from './_components/site-header';
 
@@ -32,6 +35,27 @@ const FEATURES = [
   },
 ];
 
+const COMMUNITY_LINKS = [
+  {
+    icon: StarIcon,
+    title: 'Star the repo',
+    description: 'The easiest way to help — stars help other shadcn users find the project.',
+    href: GITHUB_URL,
+  },
+  {
+    icon: Bug01Icon,
+    title: 'Report a bug',
+    description: 'Something broken or rendering wrong? Open an issue with a schema that reproduces it.',
+    href: `${GITHUB_URL}/issues/new?template=bug_report.yml`,
+  },
+  {
+    icon: Idea01Icon,
+    title: 'Request a feature',
+    description: 'Missing a widget, field type or builder option? Suggest it and help set the roadmap.',
+    href: `${GITHUB_URL}/issues/new?template=feature_request.yml`,
+  },
+];
+
 const TYPE_LABELS: Record<string, string> = {
   'registry:lib': 'lib',
   'registry:ui': 'ui',
@@ -45,6 +69,7 @@ export default async function Home() {
   const downloadCounts = redis
     ? await redis.mget<number[]>(...items.map((item) => `downloads:${item.name}`))
     : [];
+  const totalInstalls = downloadCounts.reduce((sum, n) => sum + (n ?? 0), 0);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -108,7 +133,7 @@ export default async function Home() {
               </svg>
             </a>
             <a
-              href="https://github.com/henrynoowah/shadcn-rjsf-form-builder"
+              href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
@@ -176,20 +201,80 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Community */}
+      <section className="border-t border-border px-6 py-16">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-10 flex items-center gap-4">
+            <span className="font-mono text-xs font-medium uppercase tracking-widest text-muted-foreground">
+              Community
+            </span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          <h2 className="mb-3 text-2xl font-bold tracking-tight">
+            {totalInstalls > 0
+              ? `${totalInstalls.toLocaleString()} installs and counting.`
+              : 'Help shape what ships next.'}
+          </h2>
+          <p className="mb-8 max-w-xl text-sm leading-relaxed text-muted-foreground">
+            This is a solo-maintained project — stars, bug reports and feature ideas are
+            what decide the roadmap.
+          </p>
+
+          <div className="grid gap-px border border-border bg-border sm:grid-cols-3">
+            {COMMUNITY_LINKS.map((link) => (
+              <a
+                key={link.title}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col bg-background p-6 transition-colors hover:bg-muted"
+              >
+                <HugeiconsIcon
+                  icon={link.icon}
+                  strokeWidth={1.75}
+                  className="mb-4 size-5 text-muted-foreground transition-colors group-hover:text-foreground"
+                />
+                <h3 className="mb-2 flex items-center gap-1.5 text-sm font-semibold">
+                  {link.title}
+                  <span className="text-muted-foreground transition-transform group-hover:translate-x-0.5">
+                    →
+                  </span>
+                </h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{link.description}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-border px-6 py-8">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
           <span className="font-mono text-xs text-muted-foreground">
             shadcn-rjsf-form-builder
           </span>
-          <a
-            href="https://github.com/henrynoowah/shadcn-rjsf-form-builder"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-xs text-muted-foreground transition-colors hover:text-foreground"
-          >
-            github.com/henrynoowah/shadcn-rjsf-form-builder
-          </a>
+          <div className="flex flex-wrap items-center gap-4 font-mono text-xs text-muted-foreground">
+            <a href="/docs/changelog" className="transition-colors hover:text-foreground">
+              Changelog
+            </a>
+            <a
+              href={`${GITHUB_URL}/issues`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-foreground"
+            >
+              Issues
+            </a>
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-foreground"
+            >
+              github.com/henrynoowah/shadcn-rjsf-form-builder
+            </a>
+          </div>
         </div>
       </footer>
     </div>

@@ -8,9 +8,6 @@ type Props = {
   cmd: string;
   step?: number;
   note?: string;
-  typeBadge?: string;
-  dependencies?: string[];
-  downloads?: number;
   /** Current registry version, linked to the changelog. */
   version?: string;
 };
@@ -21,9 +18,6 @@ export default async function InstallCard({
   cmd,
   step,
   note,
-  typeBadge,
-  dependencies,
-  downloads,
   version,
 }: Props) {
   return (
@@ -36,25 +30,13 @@ export default async function InstallCard({
           </span>
         )}
         <code className="font-mono text-sm font-semibold">{name}</code>
-        {typeBadge && (
-          <span className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
-            {typeBadge}
-          </span>
-        )}
-        {(version || downloads !== undefined) && (
-          <div className="ml-auto flex items-center gap-3">
-            {version && (
-              <Link
-                href="/docs/changelog"
-                className="font-mono text-[10px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-              >
-                v{version}
-              </Link>
-            )}
-            {downloads !== undefined && (
-              <span className="font-mono text-[10px] text-muted-foreground">↓ {downloads.toLocaleString()}</span>
-            )}
-          </div>
+        {version && (
+          <Link
+            href="/docs/changelog"
+            className="ml-auto font-mono text-[10px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            v{version}
+          </Link>
         )}
       </div>
 
@@ -71,20 +53,6 @@ export default async function InstallCard({
           <CopyButton text={cmd} />
         </div>
       </div>
-
-      {/* Dependencies */}
-      {dependencies && dependencies.length > 0 && (
-        <div className="border-t border-border px-4 py-2.5 flex flex-wrap gap-1.5">
-          {dependencies.map((dep) => (
-            <span
-              key={dep}
-              className="rounded bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground"
-            >
-              {dep}
-            </span>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

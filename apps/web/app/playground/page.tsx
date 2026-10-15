@@ -1,217 +1,140 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import SiteHeader from '../_components/site-header';
 import ThemePresetSwitcher from '../_components/theme-preset-switcher';
 import JsonBlock from '../_components/json-block';
 import { FormRenderer } from '@/registry/form-renderer/form-renderer';
-import { FormBuilder } from '@/registry/form-builder/form-builder';
 import type { FormSchema } from '@/registry/form-builder-types/types';
+import { SAMPLE_SCHEMA } from '@/lib/sample-schema';
 
-const SAMPLE_SCHEMA: FormSchema = {
-  id: 'demo-form',
-  title: { 'en-US': 'Contact Us', 'ko-KR': '문의하기' },
-  description: { 'en-US': "Fill out the form below and we'll get back to you." },
-  submitLabel: { 'en-US': 'Send Message', 'ko-KR': '메시지 보내기' },
-  fields: [
-    {
-      id: 'heading-1',
-      type: 'heading',
-      label: { 'en-US': 'Personal Information' },
-      order: 0,
-    },
-    {
-      id: 'name',
-      key: 'full_name',
-      type: 'text',
-      label: { 'en-US': 'Full Name', 'ko-KR': '이름' },
-      placeholder: { 'en-US': 'John Doe', 'ko-KR': '홍길동' },
-      required: true,
-      order: 1,
-    },
-    {
-      id: 'email',
-      key: 'email',
-      type: 'email',
-      label: { 'en-US': 'Email Address', 'ko-KR': '이메일 주소' },
-      placeholder: { 'en-US': 'john@example.com' },
-      required: true,
-      order: 2,
-    },
-    {
-      id: 'topic',
-      key: 'topic',
-      type: 'select',
-      label: { 'en-US': 'Topic', 'ko-KR': '주제' },
-      required: true,
-      order: 3,
-      options: [
-        { value: 'general', label: { 'en-US': 'General Inquiry', 'ko-KR': '일반 문의' } },
-        { value: 'support', label: { 'en-US': 'Technical Support', 'ko-KR': '기술 지원' } },
-        { value: 'billing', label: { 'en-US': 'Billing', 'ko-KR': '결제' } },
-        { value: 'other', label: { 'en-US': 'Other', 'ko-KR': '기타' } },
-      ],
-    },
-    {
-      id: 'separator-1',
-      type: 'separator',
-      label: { 'en-US': '' },
-      order: 4,
-    },
-    {
-      id: 'message',
-      key: 'message',
-      type: 'textarea',
-      label: { 'en-US': 'Message', 'ko-KR': '메시지' },
-      placeholder: { 'en-US': 'Tell us how we can help...' },
-      required: true,
-      validation: { minLength: 20, maxLength: 1000 },
-      order: 5,
-    },
-    {
-      id: 'newsletter',
-      key: 'newsletter',
-      type: 'checkbox',
-      label: { 'en-US': 'Subscribe to newsletter', 'ko-KR': '뉴스레터 구독' },
-      defaultValue: false,
-      order: 6,
-    },
-  ],
-};
+// Client-only: dnd-kit's DndDescribedBy id counter differs between server and client renders.
+const FormBuilder = dynamic(
+  () => import('@/registry/form-builder/form-builder').then((m) => m.FormBuilder),
+  { ssr: false, loading: () => <div className="h-full bg-muted/30" /> },
+);
 
-type Tab = 'renderer' | 'builder';
+type View = 'preview' | 'schema';
 type Locale = 'en-US' | 'ko-KR';
 
+const VIEWS: { id: View; label: string }[] = [
+  { id: 'preview', label: 'Preview' },
+  { id: 'schema', label: 'Schema' },
+];
+
 export default function PlaygroundPage() {
-  const [activeTab, setActiveTab] = useState<Tab>('renderer');
+  const [view, setView] = useState<View>('preview');
   const [locale, setLocale] = useState<Locale>('en-US');
   const [submittedData, setSubmittedData] = useState<Record<string, unknown> | null>(null);
-  const [builderSchema, setBuilderSchema] = useState<FormSchema>(SAMPLE_SCHEMA);
+  const [schema, setSchema] = useState<FormSchema>(SAMPLE_SCHEMA);
+  const submittedRef = useRef<HTMLDivElement>(null);
+
+  // The result renders below the form, often off-screen in the preview pane.
+  useEffect(() => {
+    if (submittedData) submittedRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [submittedData]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <SiteHeader badge="playground" links={[{ href: '/docs', label: 'Docs' }]} />
+    <div className="flex min-h-dvh flex-col bg-background text-foreground xl:h-dvh">
+      <SiteHeader badge="playground" links={[{ href: '/docs', label: 'Docs' }]} fullWidth />
 
-      {/* Subheader: tabs + locale switcher */}
-      <div className="border-b border-border px-6">
-        <div className="mx-auto flex max-w-5xl flex-col gap-2 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-0 sm:py-0">
-          <div className="flex gap-6 overflow-x-auto">
-            {(
-              [
-                { id: 'renderer', label: 'Form Renderer' },
-                { id: 'builder', label: 'Form Builder' },
-              ] as { id: Tab; label: string }[]
-            ).map((tab) => (
+      {/* Toolbar: theme preset + locale drive both panes */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-2">
+        <p className="text-sm text-muted-foreground">Edits in the builder update the preview live.</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <ThemePresetSwitcher />
+          <div role="group" aria-label="Locale" className="flex items-center gap-2">
+            {(['en-US', 'ko-KR'] as Locale[]).map((l) => (
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`whitespace-nowrap py-3 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-primary text-foreground'
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                key={l}
+                onClick={() => setLocale(l)}
+                aria-pressed={locale === l}
+                className={`rounded px-2.5 py-1 font-mono text-xs font-medium transition-colors ${
+                  locale === l
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 }`}
               >
-                {tab.label}
+                {l}
               </button>
             ))}
-          </div>
-
-          {/* Theme preset + locale switcher */}
-          <div className="flex flex-wrap items-center gap-3">
-            <ThemePresetSwitcher />
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest mr-1">
-                locale
-              </span>
-              {(['en-US', 'ko-KR'] as Locale[]).map((l) => (
-                <button
-                  key={l}
-                  onClick={() => setLocale(l)}
-                  className={`rounded px-2.5 py-1 font-mono text-xs font-medium transition-colors ${
-                    locale === l
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                  }`}
-                >
-                  {l}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <main className="mx-auto max-w-5xl px-6 py-8">
-        {activeTab === 'renderer' && (
-          <div className="grid gap-8 lg:grid-cols-2">
-            {/* Form */}
-            <div>
-              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Live Form
-              </h2>
-              <div className="rounded-lg border border-border p-6">
-                <FormRenderer
-                  schema={builderSchema}
-                  locale={locale}
-                  baseLocale="en-US"
-                  onSubmit={(data) => setSubmittedData(data)}
-                />
-              </div>
-            </div>
+      {/* Workspace: side by side on xl, stacked below */}
+      <main className="grid flex-1 xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_28rem]">
+        <section
+          aria-label="Form builder"
+          className="h-[36rem] min-w-0 overflow-x-auto border-b border-border xl:h-auto xl:min-h-0 xl:border-b-0 xl:border-r"
+        >
+          {/* Palette + canvas + settings need ~52rem; scroll sideways on narrow screens rather than crush the canvas. */}
+          <div className="h-full min-w-[52rem] xl:min-w-0">
+            <FormBuilder
+              initialSchema={schema}
+              onChange={setSchema}
+              locale={locale}
+              baseLocale="en-US"
+              availableLocales={['en-US', 'ko-KR']}
+              className="h-full rounded-none! border-0!"
+            />
+          </div>
+        </section>
 
-            {/* Output */}
-            <div>
-              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Submitted Data
-              </h2>
-              <div className="rounded-lg border border-border bg-muted/30 overflow-auto">
-                {submittedData ? (
-                  <JsonBlock value={submittedData} />
-                ) : (
-                  <p className="p-4 text-sm text-muted-foreground">Submit the form to see data here.</p>
+        <section aria-label="Live form" className="flex min-w-0 flex-col xl:min-h-0">
+          <div role="tablist" className="flex gap-6 border-b border-border px-6">
+            {VIEWS.map((v) => (
+              <button
+                key={v.id}
+                role="tab"
+                aria-selected={view === v.id}
+                onClick={() => setView(v.id)}
+                className={`whitespace-nowrap py-3 text-sm font-medium border-b-2 transition-colors ${
+                  view === v.id
+                    ? 'border-primary text-foreground'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
+
+          <div role="tabpanel" className="flex-1 overflow-y-auto bg-muted/30 xl:min-h-0">
+            {view === 'preview' ? (
+              <div className="mx-auto max-w-md space-y-6 p-6">
+                <div className="rounded-lg border border-border bg-background p-6">
+                  <FormRenderer
+                    schema={schema}
+                    locale={locale}
+                    baseLocale="en-US"
+                    onSubmit={setSubmittedData}
+                  />
+                </div>
+
+                {submittedData && (
+                  <div ref={submittedRef}>
+                    <div className="mb-2 flex items-center justify-between">
+                      <h2 className="text-sm font-medium">Submitted data</h2>
+                      <button
+                        onClick={() => setSubmittedData(null)}
+                        className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    <div className="overflow-auto rounded-lg border border-border bg-background">
+                      <JsonBlock value={submittedData} />
+                    </div>
+                  </div>
                 )}
               </div>
-
-              <h2 className="mb-4 mt-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                FormSchema
-              </h2>
-              <div className="rounded-lg border border-border bg-muted/30 max-h-96 overflow-auto">
-                <JsonBlock value={builderSchema} />
-              </div>
-            </div>
+            ) : (
+              <JsonBlock value={schema} />
+            )}
           </div>
-        )}
-
-        {activeTab === 'builder' && (
-          <div className="space-y-6">
-            <p className="text-sm text-muted-foreground">
-              Drag fields from the palette, edit their settings, and see the schema update in real
-              time.
-            </p>
-            <div
-              className="rounded-lg border border-border overflow-hidden"
-              style={{ height: '70vh' }}
-            >
-              <FormBuilder
-                initialSchema={builderSchema}
-                onChange={setBuilderSchema}
-                locale={locale}
-                baseLocale="en-US"
-                availableLocales={['en-US', 'ko-KR']}
-                className="h-full"
-              />
-            </div>
-            <div>
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Generated Schema
-              </h2>
-              <div className="rounded-lg border border-border bg-muted/30 max-h-64 overflow-auto">
-                <JsonBlock value={builderSchema} />
-              </div>
-            </div>
-          </div>
-        )}
+        </section>
       </main>
     </div>
   );

@@ -1,65 +1,68 @@
 import { headers } from 'next/headers';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Bug01Icon, Idea01Icon, StarIcon } from '@hugeicons/core-free-icons';
+import {
+  Bug01Icon,
+  DocumentCodeIcon,
+  DragDropIcon,
+  Idea01Icon,
+  PaintBoardIcon,
+  StarIcon,
+  TranslateIcon,
+} from '@hugeicons/core-free-icons';
 import { getAllRegistryItems } from '@/lib/registry';
 import { redis } from '@/lib/redis';
 import { getLatestRelease } from '@/lib/changelog';
 import { GITHUB_URL } from '@/lib/site';
-import InstallCard from './_components/install-card';
+import CodeBlock from './_components/code-block';
+import CopyButton from './_components/copy-button';
+import { BuilderPreview, RendererPreview } from './_components/component-preview';
+import HeroDemo from './_components/hero-demo';
 import SiteHeader from './_components/site-header';
 
 const FEATURES = [
   {
-    label: '01',
-    title: 'JSON Schema Driven',
-    description:
-      'Built on react-jsonschema-form v6. Any valid JSON Schema definition renders as a fully accessible, styled form — no mapping layer needed.',
+    icon: DocumentCodeIcon,
+    title: 'JSON Schema driven',
+    description: 'Built on react-jsonschema-form v6. Any valid schema renders as an accessible form.',
   },
   {
-    label: '02',
-    title: 'i18n First',
-    description:
-      'LocalizedString accepts a plain string or a locale-keyed map. Switch locales at runtime. No rebuilds, no separate i18n library required.',
+    icon: TranslateIcon,
+    title: 'i18n first',
+    description: 'Labels take a string or a locale map. Switch locales at runtime, no extra library.',
   },
   {
-    label: '03',
-    title: 'shadcn Primitives',
-    description:
-      'Every widget — Input, Select, Checkbox, RadioGroup — is built on your existing shadcn/ui components. Fully themeable, zero style overrides.',
+    icon: PaintBoardIcon,
+    title: 'shadcn primitives',
+    description: 'Every widget uses your own shadcn/ui components, so your theme just applies.',
   },
   {
-    label: '04',
-    title: 'Visual Builder',
-    description:
-      'Drag-and-drop form builder with a live preview pane and schema inspector. Build visually, export a FormSchema, wire directly to the renderer.',
+    icon: DragDropIcon,
+    title: 'Visual builder',
+    description: 'Drag-and-drop palette, canvas and settings panel. Exports a FormSchema the renderer consumes.',
   },
 ];
 
 const COMMUNITY_LINKS = [
-  {
-    icon: StarIcon,
-    title: 'Star the repo',
-    description: 'The easiest way to help — stars help other shadcn users find the project.',
-    href: GITHUB_URL,
-  },
-  {
-    icon: Bug01Icon,
-    title: 'Report a bug',
-    description: 'Something broken or rendering wrong? Open an issue with a schema that reproduces it.',
-    href: `${GITHUB_URL}/issues/new?template=bug_report.yml`,
-  },
-  {
-    icon: Idea01Icon,
-    title: 'Request a feature',
-    description: 'Missing a widget, field type or builder option? Suggest it and help set the roadmap.',
-    href: `${GITHUB_URL}/issues/new?template=feature_request.yml`,
-  },
+  { icon: StarIcon, label: 'Star the repo', href: GITHUB_URL },
+  { icon: Bug01Icon, label: 'Report a bug', href: `${GITHUB_URL}/issues/new?template=bug_report.yml` },
+  { icon: Idea01Icon, label: 'Request a feature', href: `${GITHUB_URL}/issues/new?template=feature_request.yml` },
 ];
 
-const TYPE_LABELS: Record<string, string> = {
-  'registry:lib': 'lib',
-  'registry:ui': 'ui',
+const PREVIEWS: Record<string, React.ReactNode> = {
+  'form-renderer': <RendererPreview />,
+  'form-builder': <BuilderPreview />,
 };
+
+function InstallCommand({ cmd }: { cmd: string }) {
+  return (
+    <div className="relative overflow-hidden rounded-md">
+      <CodeBlock code={cmd} lang="sh" className="[&_.shiki]:p-3! [&_.shiki]:pr-12! [&_.shiki]:whitespace-pre-wrap [&_.shiki]:break-all" />
+      <div className="absolute right-2 top-1/2 z-10 -translate-y-1/2">
+        <CopyButton text={cmd} />
+      </div>
+    </div>
+  );
+}
 
 export default async function Home() {
   const items = getAllRegistryItems();
@@ -70,6 +73,8 @@ export default async function Home() {
     ? await redis.mget<number[]>(...items.map((item) => `downloads:${item.name}`))
     : [];
   const totalInstalls = downloadCounts.reduce((sum, n) => sum + (n ?? 0), 0);
+  const components = items.filter((item) => item.type === 'registry:ui');
+  const installCmd = (name: string) => `npx shadcn@latest add "${registryBase}/${name}.json"`;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -82,68 +87,58 @@ export default async function Home() {
       />
 
       {/* Hero */}
-      <section
-        className="relative overflow-hidden border-b border-border px-6 py-24"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle, oklch(0.708 0 0 / 0.25) 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
-        }}
-      >
-        <div className="relative mx-auto max-w-5xl">
-          {/* Project icon */}
-          <div className="mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="h-10 w-10" aria-hidden="true">
+      <section className="relative overflow-hidden border-b border-border px-6 py-20 lg:py-24">
+        <div
+          aria-hidden
+          className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_30%_40%,black,transparent_75%)]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, oklch(0.708 0 0 / 0.4) 1px, transparent 1px)',
+            backgroundSize: '24px 24px',
+          }}
+        />
+        <div className="relative mx-auto grid max-w-5xl grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="mb-6 h-10 w-10" aria-hidden="true">
               <rect width="32" height="32" rx="7" className="fill-primary" />
               <circle cx="8" cy="12" r="1.25" className="fill-primary-foreground" opacity="0.25" />
               <circle cx="8" cy="16" r="1.25" className="fill-primary-foreground" opacity="0.25" />
               <circle cx="8" cy="20" r="1.25" className="fill-primary-foreground" opacity="0.25" />
-              <rect x="12" y="10"  width="13" height="3" rx="1.5" className="fill-primary-foreground" opacity="0.90" />
+              <rect x="12" y="10" width="13" height="3" rx="1.5" className="fill-primary-foreground" opacity="0.9" />
               <rect x="12" y="14.5" width="10" height="3" rx="1.5" className="fill-primary-foreground" opacity="0.55" />
-              <rect x="12" y="19"  width="7"  height="3" rx="1.5" className="fill-primary-foreground" opacity="0.25" />
+              <rect x="12" y="19" width="7" height="3" rx="1.5" className="fill-primary-foreground" opacity="0.25" />
             </svg>
+
+            <h1 className="mb-6 text-5xl font-bold tracking-tight leading-[1.1] text-balance">
+              Form Builder
+              <br />
+              <span className="text-muted-foreground font-normal">for the shadcn ecosystem.</span>
+            </h1>
+
+            <p className="mb-10 max-w-xl text-lg text-muted-foreground leading-relaxed">
+              react-jsonschema-form, built on your shadcn/ui components. Render forms from JSON
+              Schema, or build them visually.
+            </p>
+
+            <InstallCommand cmd={installCmd('form-builder')} />
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-sm">
+              <span className="text-muted-foreground">Pulls in form-renderer and types automatically.</span>
+              <a
+                href="/playground"
+                className="group inline-flex items-center gap-1 font-medium underline-offset-4 hover:underline"
+              >
+                Try the playground
+                <svg
+                  viewBox="0 0 16 16"
+                  className="h-3.5 w-3.5 fill-current transition-transform group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                >
+                  <path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z" />
+                </svg>
+              </a>
+            </div>
           </div>
 
-          <div className="mb-5 flex items-center gap-2">
-            <span className="inline-block h-2 w-2 rounded-full bg-foreground" />
-            <span className="font-mono text-xs text-muted-foreground">
-              react-jsonschema-form × shadcn/ui
-            </span>
-          </div>
-
-          <h1 className="mb-6 max-w-2xl text-5xl font-bold tracking-tight leading-[1.1]">
-            Form Builder
-            <br />
-            <span className="text-muted-foreground font-normal">for the shadcn ecosystem.</span>
-          </h1>
-
-          <p className="mb-10 max-w-xl text-lg text-muted-foreground leading-relaxed">
-            Copy-paste RJSF form components via the shadcn CLI. JSON Schema driven,
-            i18n ready, and built entirely on your existing shadcn/ui primitives.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <a
-              href="/playground"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-80"
-            >
-              View Demo
-              <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 fill-current" aria-hidden="true">
-                <path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z" />
-              </svg>
-            </a>
-            <a
-              href={GITHUB_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
-            >
-              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
-                <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" />
-              </svg>
-              Star on GitHub
-            </a>
-          </div>
+          <HeroDemo />
         </div>
       </section>
 
@@ -158,8 +153,8 @@ export default async function Home() {
           </div>
           <div className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
             {FEATURES.map((f) => (
-              <div key={f.label} className="bg-background p-6">
-                <div className="mb-4 font-mono text-xs text-muted-foreground">{f.label}</div>
+              <div key={f.title} className="bg-background p-6">
+                <HugeiconsIcon icon={f.icon} strokeWidth={1.75} className="mb-4 size-5 text-muted-foreground" />
                 <h3 className="mb-2 text-sm font-semibold">{f.title}</h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">{f.description}</p>
               </div>
@@ -184,18 +179,16 @@ export default async function Home() {
             </a>
           </div>
 
-          <div className="space-y-4">
-            {items.map((item, i) => (
-              <InstallCard
-                key={item.name}
-                name={item.name}
-                description={item.description ?? ''}
-                cmd={`npx shadcn@latest add "${registryBase}/${item.name}.json"`}
-                typeBadge={TYPE_LABELS[item.type] ?? item.type}
-                dependencies={item.dependencies}
-                downloads={redis ? (downloadCounts[i] ?? 0) : undefined}
-                version={latest.version}
-              />
+          <div className="grid gap-6 md:grid-cols-2">
+            {components.map((item) => (
+              <article key={item.name} className="flex flex-col overflow-hidden rounded-lg border border-border">
+                {PREVIEWS[item.name]}
+                <div className="flex flex-1 flex-col p-5">
+                  <h3 className="font-mono text-sm font-semibold">{item.name}</h3>
+                  <p className="mt-1 mb-5 flex-1 text-sm text-muted-foreground">{item.description}</p>
+                  <InstallCommand cmd={installCmd(item.name)} />
+                </div>
+              </article>
             ))}
           </div>
         </div>
@@ -216,35 +209,30 @@ export default async function Home() {
               ? `${totalInstalls.toLocaleString()} installs and counting.`
               : 'Help shape what ships next.'}
           </h2>
-          <p className="mb-8 max-w-xl text-sm leading-relaxed text-muted-foreground">
+          <p className="mb-6 max-w-xl text-sm leading-relaxed text-muted-foreground">
             This is a solo-maintained project — stars, bug reports and feature ideas are
             what decide the roadmap.
           </p>
 
-          <div className="grid gap-px border border-border bg-border sm:grid-cols-3">
+          <ul className="flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium">
             {COMMUNITY_LINKS.map((link) => (
-              <a
-                key={link.title}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex flex-col bg-background p-6 transition-colors hover:bg-muted"
-              >
-                <HugeiconsIcon
-                  icon={link.icon}
-                  strokeWidth={1.75}
-                  className="mb-4 size-5 text-muted-foreground transition-colors group-hover:text-foreground"
-                />
-                <h3 className="mb-2 flex items-center gap-1.5 text-sm font-semibold">
-                  {link.title}
-                  <span className="text-muted-foreground transition-transform group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{link.description}</p>
-              </a>
+              <li key={link.label}>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2 underline-offset-4 hover:underline"
+                >
+                  <HugeiconsIcon
+                    icon={link.icon}
+                    strokeWidth={1.75}
+                    className="size-4 text-muted-foreground transition-colors group-hover:text-foreground"
+                  />
+                  {link.label}
+                </a>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
@@ -259,20 +247,12 @@ export default async function Home() {
               Changelog
             </a>
             <a
-              href={`${GITHUB_URL}/issues`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-colors hover:text-foreground"
-            >
-              Issues
-            </a>
-            <a
               href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors hover:text-foreground"
             >
-              github.com/henrynoowah/shadcn-rjsf-form-builder
+              GitHub
             </a>
           </div>
         </div>

@@ -1,30 +1,16 @@
 import { headers } from 'next/headers';
+import Link from 'next/link';
 import CodeBlock from '../_components/code-block';
-import InstallCard from '../_components/install-card';
+import { Code, DocTable, H2 } from './_components/doc';
 import { getLatestRelease, versionHeader } from '@/lib/changelog';
 
-const INSTALL_STEPS = [
-  {
-    name: 'form-builder-types',
-    description: 'TypeScript types, validators, and shared utilities',
-    note: 'Install this first — the other two depend on it.',
-  },
-  {
-    name: 'form-renderer',
-    description: 'Renders a FormSchema as a live, accessible form',
-    note: null,
-  },
-  {
-    name: 'form-builder',
-    description: 'Drag-and-drop visual builder that emits a FormSchema',
-    note: null,
-  },
-];
+const ITEMS = ['form-builder-types', 'form-renderer', 'form-builder'];
 
 export default async function DocsGetStarted() {
   const host = (await headers()).get('host');
   const registryBase = `https://${host}/r`;
   const latest = getLatestRelease();
+  const add = (name: string, flags = '') => `npx shadcn@latest add "${registryBase}/${name}.json"${flags}`;
 
   return (
     <div className="space-y-12">
@@ -37,108 +23,70 @@ export default async function DocsGetStarted() {
         </p>
       </div>
 
-      {/* Overview */}
-      <section>
-        <h2 id="overview" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Overview</h2>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          The registry ships three items that work together:
-        </p>
-        <div className="space-y-3">
-          <div className="rounded-md border border-border p-4">
-            <div className="flex items-center gap-2 mb-1">
-              <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">form-builder-types</code>
-              <span className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">lib</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              TypeScript types (<code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormSchema</code>,{' '}
-              <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormFieldDefinition</code>, etc.),
-              the <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">registerValidator</code> API,
-              and <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">createCustomValidator</code>.
-              Both the renderer and builder import from here.
-            </p>
-          </div>
-          <div className="rounded-md border border-border p-4">
-            <div className="flex items-center gap-2 mb-1">
-              <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">form-renderer</code>
-              <span className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">ui</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              A React component that accepts a <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormSchema</code> and
-              renders it as a fully accessible, themed form using your existing shadcn/ui components.
-            </p>
-          </div>
-          <div className="rounded-md border border-border p-4">
-            <div className="flex items-center gap-2 mb-1">
-              <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">form-builder</code>
-              <span className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">ui</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              A drag-and-drop visual editor with a live preview pane. Emits a{' '}
-              <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormSchema</code> via{' '}
-              <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">onChange</code> on every edit.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Prerequisites */}
       <section>
-        <h2 id="prerequisites" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Prerequisites</h2>
-        <ul className="space-y-2 text-sm text-muted-foreground">
-          <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-foreground">•</span>
-            <span>
-              <strong className="text-foreground">shadcn/ui</strong> initialized in your project (
-              <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">npx shadcn@latest init</code>)
-            </span>
+        <H2 id="prerequisites">Prerequisites</H2>
+        <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground marker:text-foreground">
+          <li>
+            <strong className="text-foreground">shadcn/ui</strong> initialized in your project (
+            <Code>npx shadcn@latest init</Code>)
           </li>
-          <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-foreground">•</span>
-            <span>
-              <strong className="text-foreground">Next.js 13+</strong> (App Router) or{' '}
-              <strong className="text-foreground">React 18+</strong> with a compatible bundler
-            </span>
+          <li>
+            <strong className="text-foreground">Next.js 13+</strong> (App Router) or{' '}
+            <strong className="text-foreground">React 18+</strong> with a compatible bundler
           </li>
-          <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-foreground">•</span>
-            <span>
-              <strong className="text-foreground">Node.js 18+</strong>
-            </span>
+          <li>
+            <strong className="text-foreground">Node.js 18+</strong>
           </li>
         </ul>
       </section>
 
       {/* Installation */}
       <section>
-        <h2 id="installation" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Installation</h2>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-          Install in order — <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">form-builder-types</code> must
-          be installed first because the other two depend on it.
+        <H2 id="installation">Installation</H2>
+        <DocTable
+          columns={['Item', 'What it is']}
+          rows={[
+            [
+              <Code>form-builder-types</Code>,
+              <>
+                Types (<Code>FormSchema</Code>, <Code>FormFieldDefinition</Code>, …),{' '}
+                <Code>registerValidator</Code> and <Code>createCustomValidator</Code>.
+              </>,
+            ],
+            [
+              <Code>form-renderer</Code>,
+              <>
+                Renders a <Code>FormSchema</Code> as an accessible form built on your shadcn/ui components.
+              </>,
+            ],
+            [
+              <Code>form-builder</Code>,
+              <>
+                Drag-and-drop editor with a field palette, canvas and settings panel. Emits a{' '}
+                <Code>FormSchema</Code> via <Code>onChange</Code>.
+              </>,
+            ],
+          ]}
+        />
+        <p className="mt-6 mb-3 text-sm text-muted-foreground leading-relaxed">
+          Dependencies install automatically: <Code>form-builder</Code> pulls in <Code>form-renderer</Code> and{' '}
+          <Code>form-builder-types</Code>, so one command gets everything:
         </p>
-        <div className="space-y-4">
-          {INSTALL_STEPS.map((step, i) => (
-            <InstallCard
-              key={step.name}
-              step={i + 1}
-              name={step.name}
-              description={step.description}
-              note={step.note ?? undefined}
-              cmd={`npx shadcn@latest add "${registryBase}/${step.name}.json"`}
-              version={latest.version}
-            />
-          ))}
-        </div>
+        <CodeBlock lang="sh" code={add('form-builder')} />
+        <p className="mt-4 mb-3 text-sm text-muted-foreground leading-relaxed">
+          Only rendering forms? Install just the renderer (it pulls in <Code>form-builder-types</Code>):
+        </p>
+        <CodeBlock lang="sh" code={add('form-renderer')} />
       </section>
 
       {/* Quick Start: FormRenderer */}
       <section>
-        <h2 id="quick-start-formrenderer" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Quick Start: FormRenderer</h2>
+        <H2 id="quick-start-formrenderer">Quick Start: FormRenderer</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          Pass a <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormSchema</code> to{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormRenderer</code> and handle submissions
-          via <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">onSubmit</code>.
+          Pass a <Code>FormSchema</Code> to <Code>FormRenderer</Code> and handle submissions via <Code>onSubmit</Code>.
         </p>
-        <CodeBlock code={`import { FormRenderer } from '@/components/form-renderer/form-renderer';
+        <CodeBlock code={`import { FormRenderer } from '@/components/ui/rjsf-form-builder/form-renderer/form-renderer';
 import type { FormSchema } from '@/lib/form-builder-types/types';
 
 const schema: FormSchema = {
@@ -165,18 +113,16 @@ export default function ContactPage() {
 
       {/* Quick Start: FormBuilder */}
       <section>
-        <h2 id="quick-start-formbuilder" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Quick Start: FormBuilder</h2>
+        <H2 id="quick-start-formbuilder">Quick Start: FormBuilder</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          Wire <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormBuilder</code> to a{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormRenderer</code> for a live preview.
-          The builder emits a full <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormSchema</code> on
-          every change.
+          Wire <Code>FormBuilder</Code> to a <Code>FormRenderer</Code> for a live preview. The builder emits a full{' '}
+          <Code>FormSchema</Code> on every change.
         </p>
         <CodeBlock code={`'use client';
 
 import { useState } from 'react';
-import { FormBuilder } from '@/components/form-builder/form-builder';
-import { FormRenderer } from '@/components/form-renderer/form-renderer';
+import { FormBuilder } from '@/components/ui/rjsf-form-builder/form-builder/form-builder';
+import { FormRenderer } from '@/components/ui/rjsf-form-builder/form-renderer/form-renderer';
 import type { FormSchema } from '@/lib/form-builder-types/types';
 
 const INITIAL: FormSchema = { id: 'my-form', title: 'My Form', fields: [] };
@@ -204,43 +150,22 @@ export default function BuilderPage() {
 
       {/* Locale Setup */}
       <section>
-        <h2 id="locale-setup" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Locale Setup</h2>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          Both components accept a <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">locale</code> and{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">baseLocale</code> prop.
-        </p>
-        <div className="overflow-x-auto">
-          <table className="w-full border border-border text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/50">
-                <th className="px-4 py-2 text-left font-medium">Prop</th>
-                <th className="px-4 py-2 text-left font-medium">Type</th>
-                <th className="px-4 py-2 text-left font-medium">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-border">
-                <td className="px-4 py-2"><code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">locale</code></td>
-                <td className="px-4 py-2 text-muted-foreground">string</td>
-                <td className="px-4 py-2 text-muted-foreground">The active locale key (e.g. <code className="bg-muted px-1 py-0.5 rounded text-xs font-mono">"en-US"</code>). Used to resolve LocalizedString values.</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2"><code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">baseLocale</code></td>
-                <td className="px-4 py-2 text-muted-foreground">string</td>
-                <td className="px-4 py-2 text-muted-foreground">Fallback locale when the active locale has no translation for a string. In FormBuilder, new field and option labels are created under this locale.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-          If a <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">LocalizedString</code> is a plain string
-          (not a locale map), it is always used as-is regardless of the active locale.
+        <H2 id="locale-setup">Locale Setup</H2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          Both components take a <Code>locale</Code> — the active locale used to resolve <Code>LocalizedString</Code>{' '}
+          values — and a <Code>baseLocale</Code> fallback for missing translations. In <Code>FormBuilder</Code>, new
+          field and option labels are created under <Code>baseLocale</Code>. A plain-string <Code>LocalizedString</Code>{' '}
+          is always shown as-is. See the{' '}
+          <Link href="/docs/api" className="text-foreground underline underline-offset-4">
+            API Reference
+          </Link>{' '}
+          for every prop.
         </p>
       </section>
 
       {/* Updating */}
       <section>
-        <h2 id="updating" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">Updating</h2>
+        <H2 id="updating">Updating</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           Registry items are copied into your project, so updates are not automatic. Every installed file starts with a
           comment naming the version it came from:
@@ -249,18 +174,15 @@ export default function BuilderPage() {
         <p className="text-sm text-muted-foreground leading-relaxed my-4">
           Compare it with the latest release (<strong className="text-foreground">v{latest.version}</strong>) and read
           the{' '}
-          <a href="/docs/changelog" className="text-foreground underline underline-offset-4">
+          <Link href="/docs/changelog" className="text-foreground underline underline-offset-4">
             changelog
-          </a>{' '}
-          for what changed. To update, install again with <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">--overwrite</code>:
+          </Link>{' '}
+          for what changed. To update, install again with <Code>--overwrite</Code>:
         </p>
-        <CodeBlock
-          lang="sh"
-          code={INSTALL_STEPS.map((step) => `npx shadcn@latest add "${registryBase}/${step.name}.json" --overwrite`).join('\n')}
-        />
+        <CodeBlock lang="sh" code={ITEMS.map((name) => add(name, ' --overwrite')).join('\n')} />
         <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-          This replaces the files in place. If you edited them, review the result with{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">git diff</code> and re-apply your changes.
+          This replaces the files in place. If you edited them, review the result with <Code>git diff</Code> and
+          re-apply your changes.
         </p>
       </section>
     </div>

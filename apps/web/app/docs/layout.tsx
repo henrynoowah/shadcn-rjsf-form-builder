@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import SiteHeader from '../_components/site-header';
@@ -18,7 +19,6 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Get Started',
     href: '/docs',
     sections: [
-      { label: 'Overview', hash: 'overview' },
       { label: 'Prerequisites', hash: 'prerequisites' },
       { label: 'Installation', hash: 'installation' },
       { label: 'Quick Start: FormRenderer', hash: 'quick-start-formrenderer' },
@@ -70,24 +70,47 @@ const NAV_ITEMS: NavItem[] = [
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const mobileNavRef = useRef<HTMLElement>(null);
+
+  // Keep the current page visible in the horizontally scrolling mobile nav.
+  useEffect(() => {
+    const active = mobileNavRef.current?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (active) mobileNavRef.current!.scrollLeft = active.offsetLeft - 24;
+  }, [pathname]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader badge="docs" links={[{ href: '/playground', label: 'Playground' }]} />
 
-      <div className="mx-auto flex max-w-5xl flex-col gap-10 px-6 py-10 md:flex-row">
-        {/* Sidebar */}
-        <aside className="w-full shrink-0 md:w-52">
-          <nav className="space-y-1 md:sticky md:top-8">
-            <p className="mb-3 font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-              Documentation
-            </p>
+      <div className="mx-auto flex max-w-5xl flex-col gap-8 px-6 py-6 md:flex-row md:gap-10 md:py-10">
+        {/* Mobile: one scrollable row of pages */}
+        <nav ref={mobileNavRef} aria-label="Docs" className="-mx-6 flex gap-1 overflow-x-auto border-b border-border px-6 pb-3 md:hidden">
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={pathname === item.href ? 'page' : undefined}
+              className={`shrink-0 rounded-md px-3 py-1.5 text-sm transition-colors ${
+                pathname === item.href
+                  ? 'bg-muted font-medium text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Desktop: pages, with sections only under the active one */}
+        <aside className="hidden w-52 shrink-0 md:block">
+          <nav aria-label="Docs" className="sticky top-24 space-y-1">
             {NAV_ITEMS.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <div key={item.href}>
                   <Link
                     href={item.href}
+                    aria-current={isActive ? 'page' : undefined}
                     className={`block rounded-md px-3 py-2 text-sm transition-colors ${
                       isActive
                         ? 'bg-muted font-medium text-foreground'
@@ -97,9 +120,8 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                     {item.label}
                   </Link>
 
-                  {/* Section links */}
-                  {item.sections.length > 0 && (
-                    <div className="ml-3 mt-0.5 space-y-0.5 border-l border-border pl-3">
+                  {isActive && item.sections.length > 0 && (
+                    <div className="ml-3 mt-0.5 mb-2 space-y-0.5 border-l border-border pl-3">
                       {item.sections.map((section) => (
                         <Link
                           key={section.hash}

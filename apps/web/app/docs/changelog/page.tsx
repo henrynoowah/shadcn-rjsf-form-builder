@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { getChangelog, versionAnchor, type ChangeType } from '@/lib/changelog';
+import { GITHUB_URL } from '@/lib/site';
+import { Code } from '../_components/doc';
 
 export const metadata: Metadata = {
   title: 'Changelog · shadcn RJSF Form Builder',
 };
-
-const REPO_URL = 'https://github.com/henrynoowah/shadcn-rjsf-form-builder';
 
 const TYPE_LABELS: Record<ChangeType, string> = {
   breaking: 'breaking',
@@ -20,9 +20,7 @@ const TYPE_ORDER: ChangeType[] = ['breaking', 'feat', 'fix', 'docs'];
 const renderText = (text: string) =>
   text.split(/(`[^`]+`)/g).map((part, i) =>
     part.startsWith('`') && part.endsWith('`') ? (
-      <code key={i} className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">
-        {part.slice(1, -1)}
-      </code>
+      <Code key={i}>{part.slice(1, -1)}</Code>
     ) : (
       part
     ),
@@ -40,25 +38,21 @@ export default function ChangelogPage() {
           Every release of the registry items. All three items share one version number, and every installed file
           starts with a comment naming the version it came from.
         </p>
-        <div className="mt-4 flex flex-wrap gap-2 text-xs">
-          <a
-            href="/changelog.xml"
-            className="rounded-md border border-border px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
+        <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+          Follow along via the{' '}
+          <a href="/changelog.xml" className="text-foreground underline underline-offset-4">
             RSS feed
           </a>
+          ,{' '}
           <a
-            href={`${REPO_URL}/releases`}
+            href={`${GITHUB_URL}/releases`}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-md border border-border px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="text-foreground underline underline-offset-4"
           >
             GitHub Releases
           </a>
-        </div>
-        <p className="mt-3 text-xs text-muted-foreground">
-          To get notified on GitHub, choose <strong className="text-foreground">Watch → Custom → Releases</strong> on
-          the repository.
+          , or <strong className="text-foreground">Watch → Custom → Releases</strong> on the repository.
         </p>
       </div>
 
@@ -82,7 +76,7 @@ export default function ChangelogPage() {
               </time>
               <div className="ml-auto flex gap-3 text-xs">
                 <a
-                  href={`${REPO_URL}/releases/tag/v${entry.version}`}
+                  href={`${GITHUB_URL}/releases/tag/v${entry.version}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
@@ -91,7 +85,7 @@ export default function ChangelogPage() {
                 </a>
                 {previous && (
                   <a
-                    href={`${REPO_URL}/compare/v${previous.version}...v${entry.version}`}
+                    href={`${GITHUB_URL}/compare/v${previous.version}...v${entry.version}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"

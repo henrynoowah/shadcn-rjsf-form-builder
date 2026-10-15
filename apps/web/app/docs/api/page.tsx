@@ -1,38 +1,7 @@
 import CodeBlock from '@/app/_components/code-block';
+import { Code, H2, PropsTable, type PropRow } from '../_components/doc';
 
-type Row = { name: string; type: string; required?: boolean; description: React.ReactNode };
-
-const Code = ({ children }: { children: React.ReactNode }) => (
-  <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">{children}</code>
-);
-
-const PropsTable = ({ rows, firstColumn = 'Prop' }: { rows: Row[]; firstColumn?: string }) => (
-  <div className="overflow-x-auto">
-    <table className="w-full border border-border text-sm">
-      <thead>
-        <tr className="border-b border-border bg-muted/50">
-          <th className="px-4 py-2 text-left font-medium">{firstColumn}</th>
-          <th className="px-4 py-2 text-left font-medium">Type</th>
-          <th className="px-4 py-2 text-left font-medium">Description</th>
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-border">
-        {rows.map((row) => (
-          <tr key={row.name}>
-            <td className="px-4 py-2 align-top whitespace-nowrap">
-              <Code>{row.name}</Code>
-              {row.required && <span className="text-destructive ml-0.5">*</span>}
-            </td>
-            <td className="px-4 py-2 align-top font-mono text-xs text-muted-foreground">{row.type}</td>
-            <td className="px-4 py-2 align-top text-muted-foreground">{row.description}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
-
-const RENDERER_PROPS: Row[] = [
+const RENDERER_PROPS: PropRow[] = [
   { name: 'schema', type: 'FormSchema', required: true, description: 'The form definition to render.' },
   { name: 'locale', type: 'string', required: true, description: 'Active locale used to resolve LocalizedString values.' },
   { name: 'baseLocale', type: 'string', description: 'Fallback locale when a string has no translation for locale.' },
@@ -81,7 +50,7 @@ const RENDERER_PROPS: Row[] = [
   { name: 'className', type: 'string', description: 'Class name for the wrapper element.' },
 ];
 
-const BUILDER_PROPS: Row[] = [
+const BUILDER_PROPS: PropRow[] = [
   { name: 'locale', type: 'string', required: true, description: 'Locale used to display labels in the builder.' },
   {
     name: 'baseLocale',
@@ -98,7 +67,7 @@ const BUILDER_PROPS: Row[] = [
   { name: 'className', type: 'string', description: 'Class name for the builder container. Give it a height.' },
 ];
 
-const VALIDATION_HELPERS: Row[] = [
+const VALIDATION_HELPERS: PropRow[] = [
   {
     name: 'registerValidator',
     type: '(key, fn) => void',
@@ -117,7 +86,7 @@ const VALIDATION_HELPERS: Row[] = [
   },
 ];
 
-const SCHEMA_HELPERS: Row[] = [
+const SCHEMA_HELPERS: PropRow[] = [
   {
     name: 'toJsonSchema',
     type: '(schema, locale, baseLocale?) => RJSFSchema',
@@ -164,9 +133,7 @@ export default function ApiReferencePage() {
       </div>
 
       <section>
-        <h2 id="formrenderer" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">
-          FormRenderer
-        </h2>
+        <H2 id="formrenderer">FormRenderer</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           From <Code>@/components/ui/rjsf-form-builder/form-renderer/form-renderer</Code>.
         </p>
@@ -174,9 +141,7 @@ export default function ApiReferencePage() {
       </section>
 
       <section>
-        <h2 id="formbuilder" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">
-          FormBuilder
-        </h2>
+        <H2 id="formbuilder">FormBuilder</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           From <Code>@/components/ui/rjsf-form-builder/form-builder/form-builder</Code>.
         </p>
@@ -184,9 +149,7 @@ export default function ApiReferencePage() {
       </section>
 
       <section>
-        <h2 id="validation-helpers" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">
-          Validation helpers
-        </h2>
+        <H2 id="validation-helpers">Validation helpers</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           From <Code>@/lib/form-builder-types/validation</Code>.
         </p>
@@ -207,9 +170,7 @@ registerValidator('work-email', (value) =>
       </section>
 
       <section>
-        <h2 id="schema-helpers" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-4">
-          Schema helpers
-        </h2>
+        <H2 id="schema-helpers">Schema helpers</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           From <Code>@/lib/form-builder-types/schema-builder</Code>, except <Code>localizeText</Code>, which is in{' '}
           <Code>@/lib/form-builder-types/i18n</Code>.

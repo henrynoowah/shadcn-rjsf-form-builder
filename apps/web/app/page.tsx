@@ -3,6 +3,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Bug01Icon,
   DocumentCodeIcon,
+  Download04Icon,
   DragDropIcon,
   Idea01Icon,
   PaintBoardIcon,
@@ -74,6 +75,7 @@ export default async function Home() {
     : [];
   const totalInstalls = downloadCounts.reduce((sum, n) => sum + (n ?? 0), 0);
   const components = items.filter((item) => item.type === 'registry:ui');
+  const downloadsFor = (name: string) => downloadCounts[items.findIndex((item) => item.name === name)] ?? 0;
   const installCmd = (name: string) => `npx shadcn@latest add "${registryBase}/${name}.json"`;
 
   return (
@@ -184,7 +186,16 @@ export default async function Home() {
               <article key={item.name} className="flex flex-col overflow-hidden rounded-lg border border-border">
                 {PREVIEWS[item.name]}
                 <div className="flex flex-1 flex-col p-5">
-                  <h3 className="font-mono text-sm font-semibold">{item.name}</h3>
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="font-mono text-sm font-semibold">{item.name}</h3>
+                    {redis && (
+                      <span className="flex items-center gap-1 font-mono text-xs text-muted-foreground tabular-nums">
+                        <HugeiconsIcon icon={Download04Icon} strokeWidth={1.75} className="size-3.5" aria-hidden />
+                        {downloadsFor(item.name).toLocaleString()}
+                        <span className="sr-only">installs</span>
+                      </span>
+                    )}
+                  </div>
                   <p className="mt-1 mb-5 flex-1 text-sm text-muted-foreground">{item.description}</p>
                   <InstallCommand cmd={installCmd(item.name)} />
                 </div>

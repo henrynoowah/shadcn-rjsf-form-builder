@@ -329,3 +329,29 @@
   font-weight: var(--shiki-dark-font-weight) !important;
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
+
+/* Hero demo — fields and code lines reveal on mount; see app/_components/hero-demo.tsx */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-demo fieldset > div,
+  .hero-demo .hero-line {
+    animation: hero-reveal 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .hero-demo .hero-caret {
+    animation: hero-caret 1s steps(1) infinite;
+  }
+}
+@keyframes hero-reveal {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(4px);
+  }
+  to {
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+@keyframes hero-caret {
+  50% {
+    opacity: 0;
+  }
+}

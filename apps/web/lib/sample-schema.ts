@@ -1,0 +1,72 @@
+import type { FormSchema } from '@/registry/form-builder-types/types';
+
+export const SAMPLE_SCHEMA: FormSchema = {
+  id: 'demo-form',
+  title: { 'en-US': 'Contact Us', 'ko-KR': '문의하기' },
+  description: { 'en-US': "Fill out the form below and we'll get back to you." },
+  submitLabel: { 'en-US': 'Send Message', 'ko-KR': '메시지 보내기' },
+  fields: [
+    {
+      id: 'heading-1',
+      type: 'heading',
+      label: { 'en-US': 'Personal Information' },
+      order: 0,
+    },
+    {
+      id: 'name',
+      key: 'full_name',
+      type: 'text',
+      label: { 'en-US': 'Full Name', 'ko-KR': '이름' },
+      placeholder: { 'en-US': 'John Doe', 'ko-KR': '홍길동' },
+      required: true,
+      order: 1,
+    },
+    {
+      id: 'email',
+      key: 'email',
+      type: 'email',
+      label: { 'en-US': 'Email Address', 'ko-KR': '이메일 주소' },
+      placeholder: { 'en-US': 'john@example.com' },
+      required: true,
+      order: 2,
+    },
+    {
+      id: 'topic',
+      key: 'topic',
+      type: 'select',
+      label: { 'en-US': 'Topic', 'ko-KR': '주제' },
+      required: true,
+      order: 3,
+      options: [
+        { value: 'general', label: { 'en-US': 'General Inquiry', 'ko-KR': '일반 문의' } },
+        { value: 'support', label: { 'en-US': 'Technical Support', 'ko-KR': '기술 지원' } },
+        { value: 'billing', label: { 'en-US': 'Billing', 'ko-KR': '결제' } },
+        { value: 'other', label: { 'en-US': 'Other', 'ko-KR': '기타' } },
+      ],
+    },
+    {
+      id: 'separator-1',
+      type: 'separator',
+      label: { 'en-US': '' },
+      order: 4,
+    },
+    {
+      id: 'message',
+      key: 'message',
+      type: 'textarea',
+      label: { 'en-US': 'Message', 'ko-KR': '메시지' },
+      placeholder: { 'en-US': 'Tell us how we can help...' },
+      required: true,
+      validation: { minLength: 20, maxLength: 1000 },
+      order: 5,
+    },
+    {
+      id: 'newsletter',
+      key: 'newsletter',
+      type: 'checkbox',
+      label: { 'en-US': 'Subscribe to newsletter', 'ko-KR': '뉴스레터 구독' },
+      defaultValue: false,
+      order: 6,
+    },
+  ],
+};

@@ -1,5 +1,6 @@
 import { codeToHtml } from 'shiki';
 import ExampleBlock from './_components/example-block';
+import { Code, H2 } from '../_components/doc';
 import ContactFormDemo from './_components/demos/contact-form-demo';
 import ConditionalDemo from './_components/demos/conditional-demo';
 import LocaleDemo from './_components/demos/locale-demo';
@@ -14,7 +15,7 @@ async function highlight(code: string) {
   });
 }
 
-const CONTACT_FORM_CODE = `import { FormRenderer } from '@/components/form-renderer/form-renderer';
+const CONTACT_FORM_CODE = `import { FormRenderer } from '@/components/ui/rjsf-form-builder/form-renderer/form-renderer';
 import type { FormSchema } from '@/lib/form-builder-types/types';
 
 const schema: FormSchema = {
@@ -110,7 +111,7 @@ const CONDITIONAL_CODE = `const schema: FormSchema = {
 const LOCALE_CODE = `'use client';
 
 import { useState } from 'react';
-import { FormRenderer } from '@/components/form-renderer/form-renderer';
+import { FormRenderer } from '@/components/ui/rjsf-form-builder/form-renderer/form-renderer';
 import type { FormSchema } from '@/lib/form-builder-types/types';
 
 const schema: FormSchema = {
@@ -226,8 +227,8 @@ registerValidator('no-free-email', (value) => {
 const BUILDER_CODE = `'use client';
 
 import { useState } from 'react';
-import { FormBuilder } from '@/components/form-builder/form-builder';
-import { FormRenderer } from '@/components/form-renderer/form-renderer';
+import { FormBuilder } from '@/components/ui/rjsf-form-builder/form-builder/form-builder';
+import { FormRenderer } from '@/components/ui/rjsf-form-builder/form-renderer/form-renderer';
 import type { FormSchema } from '@/lib/form-builder-types/types';
 
 const INITIAL: FormSchema = { id: 'my-form', title: 'My Form', fields: [] };
@@ -269,21 +270,17 @@ export default async function ExamplesPage() {
       <div>
         <h1 className="mb-3 text-2xl font-bold tracking-tight">Examples</h1>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Annotated, copy-paste examples covering the most common patterns. Toggle between{' '}
-          <strong className="text-foreground">Code</strong> and{' '}
-          <strong className="text-foreground">Preview</strong> on each example.
+          Copy-paste examples covering the most common patterns.
         </p>
       </div>
 
       {/* Contact Form */}
       <section>
-        <h2 id="contact-form" className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-3">
-          Contact Form
-        </h2>
+        <H2 id="contact-form">Contact Form</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           A realistic contact form with display fields (
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">heading</code>,{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">separator</code>),
+          <Code>heading</Code>,{' '}
+          <Code>separator</Code>),
           validation, and a checkbox. Display fields are excluded from the submitted data.
         </p>
         <ExampleBlock codeHtml={contactHtml}>
@@ -293,15 +290,10 @@ export default async function ExamplesPage() {
 
       {/* Conditional Fields */}
       <section>
-        <h2
-          id="conditional-fields"
-          className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-3"
-        >
-          Conditional Fields
-        </h2>
+        <H2 id="conditional-fields">Conditional Fields</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           A field with a{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">condition</code> is
+          <Code>condition</Code> is
           hidden until the condition passes. Here, "Other details" only appears when the topic
           select is set to "other".
         </p>
@@ -312,15 +304,10 @@ export default async function ExamplesPage() {
 
       {/* Multi-locale Form */}
       <section>
-        <h2
-          id="multi-locale-form"
-          className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-3"
-        >
-          Multi-locale Form
-        </h2>
+        <H2 id="multi-locale-form">Multi-locale Form</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           Provide a locale map for every label, then switch the active locale at runtime. The{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">baseLocale</code> is
+          <Code>baseLocale</Code> is
           used as a fallback when a translation is missing.
         </p>
         <ExampleBlock codeHtml={localeHtml}>
@@ -330,17 +317,10 @@ export default async function ExamplesPage() {
 
       {/* Custom Validation */}
       <section>
-        <h2
-          id="custom-validation"
-          className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-3"
-        >
-          Custom Validation
-        </h2>
+        <H2 id="custom-validation">Custom Validation</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           Register a validator once at app startup. Reference it by key in any field's{' '}
-          <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">
-            validation.customRule
-          </code>
+          <Code>validation.customRule</Code>
           . The validator receives the field's value and the full form data object.
         </p>
         <ExampleBlock codeHtml={validationHtml}>
@@ -350,16 +330,11 @@ export default async function ExamplesPage() {
 
       {/* Controlled FormBuilder */}
       <section>
-        <h2
-          id="controlled-formbuilder"
-          className="scroll-mt-20 text-xl font-semibold border-b border-border pb-2 mb-3"
-        >
-          Controlled FormBuilder
-        </h2>
+        <H2 id="controlled-formbuilder">Controlled FormBuilder</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          Wire <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormBuilder</code>
-          's <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">onChange</code> into
-          a <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">FormRenderer</code>{' '}
+          Wire <Code>FormBuilder</Code>
+          's <Code>onChange</Code> into
+          a <Code>FormRenderer</Code>{' '}
           for a live side-by-side preview. The builder is always the source of truth; the renderer
           is a read-only consumer.
         </p>

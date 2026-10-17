@@ -37,6 +37,7 @@ const NAV_ITEMS: NavItem[] = [
       { label: 'LocalizedString', hash: 'localizedstring' },
       { label: 'Validation', hash: 'validation' },
       { label: 'Conditions', hash: 'conditions' },
+      { label: 'Pages', hash: 'pages' },
       { label: 'Settings', hash: 'settings' },
     ],
   },
@@ -56,6 +57,7 @@ const NAV_ITEMS: NavItem[] = [
     sections: [
       { label: 'Contact Form', hash: 'contact-form' },
       { label: 'Conditional Fields', hash: 'conditional-fields' },
+      { label: 'Multi-page Form', hash: 'multi-page-form' },
       { label: 'Multi-locale Form', hash: 'multi-locale-form' },
       { label: 'Custom Validation', hash: 'custom-validation' },
       { label: 'Controlled FormBuilder', hash: 'controlled-formbuilder' },

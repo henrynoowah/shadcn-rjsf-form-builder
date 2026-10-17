@@ -22,9 +22,9 @@ const RENDERER_PROPS: PropRow[] = [
   {
     name: 'onSubmit',
     type: '(data) => void',
-    description: 'Called with valid data on submit. Hidden fields are left out here too.',
+    description: 'Called with valid data on submit. Hidden fields are left out here too. On multi-page forms, called from the last page after every page validates.',
   },
-  { name: 'onError', type: '(errors) => void', description: 'Called when submit fails validation.' },
+  { name: 'onError', type: '(errors) => void', description: 'Called when submit (or Next) fails validation.' },
   {
     name: 'customValidate',
     type: 'CustomValidator',
@@ -45,7 +45,11 @@ const RENDERER_PROPS: PropRow[] = [
       </>
     ),
   },
-  { name: 'submitButton', type: 'ReactNode', description: 'Replaces the default submit button.' },
+  {
+    name: 'submitButton',
+    type: 'ReactNode',
+    description: 'Replaces the default submit button. On multi-page forms it is shown on the last page, next to Back.',
+  },
   { name: 'disabled', type: 'boolean', description: 'Disables every input and the submit button.' },
   { name: 'className', type: 'string', description: 'Class name for the wrapper element.' },
 ];
@@ -99,6 +103,16 @@ const SCHEMA_HELPERS: PropRow[] = [
     description: (
       <>
         The property name a field&apos;s value is stored under: <Code>key</Code>, or <Code>id</Code> if there is no key.
+      </>
+    ),
+  },
+  {
+    name: 'splitIntoPages',
+    type: '(fields) => FormPage[]',
+    description: (
+      <>
+        Splits fields at each <Code>pagebreak</Code>. Each page has <Code>fields</Code> and the break&apos;s{' '}
+        <Code>title</Code>/<Code>description</Code>. Empty pages are dropped.
       </>
     ),
   },

@@ -4,6 +4,25 @@ All notable changes to the registry items. Also published at https://shadcn-rjsf
 
 <!-- Generated from apps/web/changelog.json by scripts/build-registry.mjs. Do not edit by hand. -->
 
+## [0.3.0](https://github.com/henrynoowah/shadcn-rjsf-form-builder/releases/tag/v0.3.0) - 2026-10-17
+
+Multi-page forms: split long forms with a Page Break field.
+
+### Features
+
+- New `pagebreak` field type. Each one starts a new page, and its label and description become the page title and subtitle. Submitted data stays flat, and `toJsonSchema` / `toUiSchema` skip page breaks. _(form-builder-types, form-renderer, form-builder)_
+- `FormRenderer` pages through multi-page forms. Next validates the current page, Back keeps values, and submit validates every visible field again, going back to the first page with an error. `submitButton` is shown on the last page. _(form-renderer)_
+- `settings.showProgressBar` is implemented, and `settings.nextLabel` / `settings.backLabel` set the page button labels. _(form-builder-types, form-renderer)_
+- New helper `splitIntoPages`. _(form-builder-types)_
+- Page Break in a new Layout palette section. The canvas shows page boundaries, and the form settings show page button labels and the progress bar toggle when the form has pages. _(form-builder)_
+
+### Fixes
+
+- Errors that `customValidate` adds to hidden fields no longer block submit. _(form-renderer)_
+- The form description is no longer shown a second time below the last field. _(form-renderer)_
+
+**Full diff:** https://github.com/henrynoowah/shadcn-rjsf-form-builder/compare/v0.2.0...v0.3.0
+
 ## [0.2.0](https://github.com/henrynoowah/shadcn-rjsf-form-builder/releases/tag/v0.2.0) - 2026-10-03
 
 Correctness fixes for validators, conditional fields and builder locales, plus versioned registry output.

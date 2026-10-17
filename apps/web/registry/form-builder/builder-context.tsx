@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer, useCallback, useEffect, type ReactNode } from 'react';
 import { nanoid } from 'nanoid';
 import type { FormSchema, FormFieldDefinition, FormFieldType } from '@/lib/form-builder-types/types';
-import { isDisplayField } from '@/lib/form-builder-types/types';
+import { isDisplayField, isPageBreak } from '@/lib/form-builder-types/types';
 import { FIELD_TYPE_META } from './field-palette';
 
 const slugify = (label: string): string =>
@@ -38,7 +38,8 @@ const createDefaultField = (
     id: nanoid(8),
     ...(isDisplayField(fieldType) ? {} : { key: uniqueKey(slugify(label), existingKeys) }),
     type: fieldType,
-    label: { [labelLocale]: label },
+    // Page breaks start untitled; the renderer falls back to the form title.
+    label: { [labelLocale]: isPageBreak(fieldType) ? '' : label },
     order,
     required: false,
   };

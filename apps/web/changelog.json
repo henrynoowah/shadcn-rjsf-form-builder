@@ -1,5 +1,47 @@
 [
   {
+    "version": "0.3.0",
+    "date": "2026-10-17",
+    "summary": "Multi-page forms: split long forms with a Page Break field.",
+    "changes": [
+      {
+        "type": "feat",
+        "items": ["form-builder-types", "form-renderer", "form-builder"],
+        "text": "New `pagebreak` field type. Each one starts a new page, and its label and description become the page title and subtitle. Submitted data stays flat, and `toJsonSchema` / `toUiSchema` skip page breaks."
+      },
+      {
+        "type": "feat",
+        "items": ["form-renderer"],
+        "text": "`FormRenderer` pages through multi-page forms. Next validates the current page, Back keeps values, and submit validates every visible field again, going back to the first page with an error. `submitButton` is shown on the last page."
+      },
+      {
+        "type": "feat",
+        "items": ["form-builder-types", "form-renderer"],
+        "text": "`settings.showProgressBar` is implemented, and `settings.nextLabel` / `settings.backLabel` set the page button labels."
+      },
+      {
+        "type": "feat",
+        "items": ["form-builder-types"],
+        "text": "New helper `splitIntoPages`."
+      },
+      {
+        "type": "feat",
+        "items": ["form-builder"],
+        "text": "Page Break in a new Layout palette section. The canvas shows page boundaries, and the form settings show page button labels and the progress bar toggle when the form has pages."
+      },
+      {
+        "type": "fix",
+        "items": ["form-renderer"],
+        "text": "Errors that `customValidate` adds to hidden fields no longer block submit."
+      },
+      {
+        "type": "fix",
+        "items": ["form-renderer"],
+        "text": "The form description is no longer shown a second time below the last field."
+      }
+    ]
+  },
+  {
     "version": "0.2.0",
     "date": "2026-10-03",
     "summary": "Correctness fixes for validators, conditional fields and builder locales, plus versioned registry output.",

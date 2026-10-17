@@ -40,7 +40,7 @@ const FIELD_DEFINITION_FIELDS: PropRow[] = [
     name: 'key',
     type: 'string',
     description:
-      'Stable, human-readable property name used as the form data key in the submitted object and JSON Schema. Not applicable to display-only fields (heading, paragraph, separator).',
+      'Stable, human-readable property name used as the form data key in the submitted object and JSON Schema. Not applicable to display-only fields (heading, paragraph, separator, pagebreak).',
   },
   { name: 'type', type: 'FormFieldType', required: true, description: 'The widget type. See Field Types below.' },
   { name: 'label', type: 'LocalizedString', required: true, description: 'Visible label for the field.' },
@@ -212,11 +212,13 @@ const SETTINGS_FIELDS: React.ReactNode[][] = [
     'Controls label position relative to the input.',
   ],
   [
-    <Planned>showProgressBar</Planned>,
+    <Code>showProgressBar</Code>,
     'boolean',
     'false',
-    'Displays a progress bar indicating form completion percentage.',
+    'Multi-page forms only. Shows a progress bar under the page counter.',
   ],
+  [<Code>nextLabel</Code>, 'LocalizedString', '"Next"', 'Multi-page forms only. Label of the button that goes to the next page.'],
+  [<Code>backLabel</Code>, 'LocalizedString', '"Back"', 'Multi-page forms only. Label of the button that goes to the previous page.'],
   [
     <Planned>successMessage</Planned>,
     'LocalizedString',
@@ -262,7 +264,11 @@ export default async function SchemaReferencePage() {
         <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
           Display fields — <Code>heading</Code>, <Code>paragraph</Code> and <Code>separator</Code> — render a
           heading, a paragraph (from <Code>label</Code>) and a divider. They collect no data and are excluded
-          from submitted form data.
+          from submitted form data. <Code>pagebreak</Code> is a layout field that starts a new page; see{' '}
+          <a href="#pages" className="text-foreground underline underline-offset-4">
+            Pages
+          </a>
+          .
         </p>
       </section>
 
@@ -355,11 +361,47 @@ registerValidator('no-profanity', (value) => {
       </section>
 
       <section>
+        <H2 id="pages">Pages</H2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+          Add a <Code>pagebreak</Code> field to split a long form into pages. Fields before the first break form
+          page 1, and each break starts the next page. The break&apos;s <Code>label</Code> and{' '}
+          <Code>description</Code> become that page&apos;s title and subtitle; an empty label falls back to the
+          form title.
+        </p>
+        <CodeBlock
+          lang="ts"
+          code={`fields: [
+  { id: 'name',  key: 'name',  type: 'text',  label: 'Name',  required: true, order: 0 },
+  { id: 'p2',    type: 'pagebreak', label: 'Contact', order: 1 },
+  { id: 'email', key: 'email', type: 'email', label: 'Email', required: true, order: 2 },
+],
+settings: { showProgressBar: true }`}
+        />
+        <ul className="list-disc space-y-1.5 pl-5 text-sm text-muted-foreground leading-relaxed">
+          <li>
+            Next validates only the current page. Back never validates, and values are kept when moving between
+            pages.
+          </li>
+          <li>
+            On submit, every visible field is validated again. If a field on an earlier page fails (for example,
+            a condition made it required after that page was passed), the form goes back to that page and shows
+            the error.
+          </li>
+          <li>
+            Submitted data stays flat — pages don&apos;t nest it. <Code>toJsonSchema</Code> and{' '}
+            <Code>toUiSchema</Code> skip page breaks, so the JSON Schema of a paged form is the same as without
+            pages.
+          </li>
+          <li>Pages left empty, for example because every field on them is hidden by a condition, are skipped.</li>
+        </ul>
+      </section>
+
+      <section>
         <H2 id="settings">Settings</H2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          <Code>FormSchemaSettings</Code> is an optional object on the root <Code>FormSchema</Code>. These
-          fields are part of the type, but <Code>FormRenderer</Code> does not act on them yet. Track progress in
-          the{' '}
+          <Code>FormSchemaSettings</Code> is an optional object on the root <Code>FormSchema</Code>. Fields
+          marked <em>planned</em> are part of the type, but <Code>FormRenderer</Code> does not act on them yet.
+          Track progress in the{' '}
           <a href="/docs/changelog" className="text-foreground underline underline-offset-4">
             changelog
           </a>

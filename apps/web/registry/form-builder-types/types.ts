@@ -20,6 +20,8 @@ export const FormFieldType = {
   HEADING: 'heading',
   PARAGRAPH: 'paragraph',
   SEPARATOR: 'separator',
+  // Layout: starts a new page. Its label/description become the page's title/description.
+  PAGEBREAK: 'pagebreak',
 } as const;
 
 /** Field types that are display-only and do not collect form data */
@@ -27,10 +29,13 @@ export const DISPLAY_FIELD_TYPES: readonly FormFieldType[] = [
   FormFieldType.HEADING,
   FormFieldType.PARAGRAPH,
   FormFieldType.SEPARATOR,
+  FormFieldType.PAGEBREAK,
 ];
 
 export const isDisplayField = (type: FormFieldType): boolean =>
   (DISPLAY_FIELD_TYPES as readonly string[]).includes(type);
+
+export const isPageBreak = (type: FormFieldType): boolean => type === FormFieldType.PAGEBREAK;
 
 export type FormFieldType = (typeof FormFieldType)[keyof typeof FormFieldType];
 
@@ -74,7 +79,12 @@ export type FormFieldDefinition = {
 
 export type FormSchemaSettings = {
   layout?: 'vertical' | 'horizontal';
+  /** Show a progress bar above multi-page forms. */
   showProgressBar?: boolean;
+  /** Label of the button that moves to the next page. Defaults to "Next". */
+  nextLabel?: LocalizedString;
+  /** Label of the button that moves to the previous page. Defaults to "Back". */
+  backLabel?: LocalizedString;
   successMessage?: LocalizedString;
 };
 

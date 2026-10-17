@@ -1,6 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { FormFieldDefinition } from '@/lib/form-builder-types/types';
+import { isPageBreak } from '@/lib/form-builder-types/types';
 import { useFormBuilder } from './builder-context';
 import { localizeText } from '@/lib/form-builder-types/i18n';
 
@@ -25,9 +26,11 @@ type CanvasFieldProps = {
   field: FormFieldDefinition;
   locale: string;
   baseLocale?: string;
+  /** Number of the page this field starts. Only set for page breaks. */
+  pageNumber?: number;
 };
 
-export const CanvasField = ({ field, locale, baseLocale }: CanvasFieldProps) => {
+export const CanvasField = ({ field, locale, baseLocale, pageNumber }: CanvasFieldProps) => {
   const { selectField, removeField, state } = useFormBuilder();
   const isSelected = state.selectedFieldId === field.id;
 
@@ -43,6 +46,52 @@ export const CanvasField = ({ field, locale, baseLocale }: CanvasFieldProps) => 
 
   const label = localizeText(field.label, locale, baseLocale) || field.type;
 
+  const handle = (
+    <span
+      {...attributes}
+      {...listeners}
+      className="text-muted-foreground hover:text-foreground cursor-grab rounded p-0.5 transition-colors"
+    >
+      ⠿
+    </span>
+  );
+
+  const removeButton = (
+    <button
+      type="button"
+      className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded p-1 text-xs opacity-0 transition-opacity group-hover:opacity-100"
+      onClick={(e) => {
+        e.stopPropagation();
+        removeField(field.id);
+      }}
+    >
+      ✕
+    </button>
+  );
+
+  if (isPageBreak(field.type)) {
+    const title = localizeText(field.label, locale, baseLocale);
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`group relative flex items-center gap-2 rounded-md px-2 py-1.5 transition-all ${
+          isSelected ? 'bg-primary/5 ring-primary/30 ring-2' : 'hover:bg-background/60'
+        } ${isDragging ? 'opacity-50' : ''}`}
+        onClick={() => selectField(field.id)}
+      >
+        {handle}
+        <div className="border-border flex-1 border-t border-dashed" />
+        <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">
+          Page {pageNumber}
+          {title && <span className="text-foreground ml-1.5 font-medium normal-case tracking-normal">· {title}</span>}
+        </span>
+        <div className="border-border flex-1 border-t border-dashed" />
+        {removeButton}
+      </div>
+    );
+  }
+
   return (
     <div
       ref={setNodeRef}
@@ -53,13 +102,7 @@ export const CanvasField = ({ field, locale, baseLocale }: CanvasFieldProps) => 
       onClick={() => selectField(field.id)}
     >
       <div className="flex items-center gap-2">
-        <span
-          {...attributes}
-          {...listeners}
-          className="text-muted-foreground hover:text-foreground cursor-grab rounded p-0.5 transition-colors"
-        >
-          ⠿
-        </span>
+        {handle}
         <div className="flex-1">
           <div className="text-sm font-medium">
             {label}
@@ -67,16 +110,7 @@ export const CanvasField = ({ field, locale, baseLocale }: CanvasFieldProps) => 
           </div>
           <div className="text-muted-foreground text-xs">{field.type}</div>
         </div>
-        <button
-          type="button"
-          className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded p-1 text-xs opacity-0 transition-opacity group-hover:opacity-100"
-          onClick={(e) => {
-            e.stopPropagation();
-            removeField(field.id);
-          }}
-        >
-          ✕
-        </button>
+        {removeButton}
       </div>
     </div>
   );

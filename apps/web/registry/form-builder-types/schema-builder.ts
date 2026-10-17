@@ -1,6 +1,6 @@
 import type { RJSFSchema, UiSchema } from '@rjsf/utils';
-import type { FormFieldDefinition, FormSchema } from './types';
-import { FormFieldType, isDisplayField } from './types';
+import type { FormFieldDefinition, FormSchema, LocalizedString } from './types';
+import { FormFieldType, isDisplayField, isPageBreak } from './types';
 import { localizeFormField, localizeString } from './i18n';
 
 const fieldTypeToJsonSchema = (field: FormFieldDefinition, locale: string, baseLocale?: string): RJSFSchema => {
@@ -33,6 +33,32 @@ const fieldTypeToJsonSchema = (field: FormFieldDefinition, locale: string, baseL
 /** The property name a field's value is stored under in form data. */
 export const fieldKey = (field: FormFieldDefinition): string => field.key ?? field.id;
 
+/** Fields in display order. Page breaks are dropped: they split pages and never appear in the schema. */
+const sortFields = (fields: FormFieldDefinition[]): FormFieldDefinition[] =>
+  fields.filter((f) => !isPageBreak(f.type)).sort((a, b) => a.order - b.order);
+
+export type FormPage = {
+  fields: FormFieldDefinition[];
+  /** Label of the page break that starts this page. Undefined for the first page. */
+  title?: LocalizedString;
+  description?: LocalizedString;
+};
+
+/**
+ * Splits fields into pages at each `pagebreak` field, in `order`.
+ * Empty pages (consecutive breaks, or every field hidden by a condition) are dropped,
+ * so the result always has at least one page.
+ */
+export const splitIntoPages = (fields: FormFieldDefinition[]): FormPage[] => {
+  const pages: FormPage[] = [{ fields: [] }];
+  for (const field of [...fields].sort((a, b) => a.order - b.order)) {
+    if (isPageBreak(field.type)) pages.push({ fields: [], title: field.label, description: field.description });
+    else pages[pages.length - 1]!.fields.push(field);
+  }
+  const nonEmpty = pages.filter((p) => p.fields.length > 0);
+  return nonEmpty.length > 0 ? nonEmpty : [pages[0]!];
+};
+
 const applyValidation = (schema: RJSFSchema, field: FormFieldDefinition): RJSFSchema => {
   if (!field.validation) return schema;
 
@@ -52,7 +78,7 @@ export const toJsonSchema = (formSchema: FormSchema, locale: string, baseLocale?
   const properties: Record<string, RJSFSchema> = {};
   const required: string[] = [];
 
-  const sortedFields = [...formSchema.fields].sort((a, b) => a.order - b.order);
+  const sortedFields = sortFields(formSchema.fields);
 
   for (const field of sortedFields) {
     // Display fields use a null-type schema placeholder (rendered via custom UI field)
@@ -109,7 +135,7 @@ export const toJsonSchema = (formSchema: FormSchema, locale: string, baseLocale?
 
 export const toUiSchema = (formSchema: FormSchema, locale: string, baseLocale?: string): UiSchema => {
   const uiSchema: UiSchema = {};
-  const sortedFields = [...formSchema.fields].sort((a, b) => a.order - b.order);
+  const sortedFields = sortFields(formSchema.fields);
 
   uiSchema['ui:order'] = sortedFields.map((f) => fieldKey(f));
 

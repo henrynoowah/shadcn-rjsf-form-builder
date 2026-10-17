@@ -14,13 +14,14 @@ import {
   IconHeading,
   IconSeparator,
   IconTextCaption,
+  IconPageBreak,
 } from '@tabler/icons-react';
 import type { FormFieldType } from '@/lib/form-builder-types/types';
 
 type FieldTypeMeta = {
   label: string;
   icon: ComponentType<{ size?: number }>;
-  category: 'input' | 'display';
+  category: 'input' | 'display' | 'layout';
 };
 
 /**
@@ -41,6 +42,7 @@ export const FIELD_TYPE_META: Record<string, FieldTypeMeta> = {
   heading:   { label: 'Heading',   icon: IconHeading,     category: 'display' },
   paragraph: { label: 'Paragraph', icon: IconTextCaption, category: 'display' },
   separator: { label: 'Separator', icon: IconSeparator,   category: 'display' },
+  pagebreak: { label: 'Page Break', icon: IconPageBreak,  category: 'layout' },
 };
 
 const INPUT_FIELD_TYPES = Object.entries(FIELD_TYPE_META)
@@ -49,6 +51,10 @@ const INPUT_FIELD_TYPES = Object.entries(FIELD_TYPE_META)
 
 const DISPLAY_FIELD_TYPES = Object.entries(FIELD_TYPE_META)
   .filter(([, m]) => m.category === 'display')
+  .map(([type, m]) => ({ type: type as FormFieldType, ...m }));
+
+const LAYOUT_FIELD_TYPES = Object.entries(FIELD_TYPE_META)
+  .filter(([, m]) => m.category === 'layout')
   .map(([type, m]) => ({ type: type as FormFieldType, ...m }));
 
 export const PaletteOverlayItem = ({ fieldType }: { fieldType: string }) => {
@@ -107,6 +113,14 @@ export const FieldPalette = () => {
       </h3>
       <div className="space-y-0.5">
         {DISPLAY_FIELD_TYPES.map((item) => (
+          <PaletteItem key={item.type} {...item} />
+        ))}
+      </div>
+      <h3 className="text-sidebar-foreground/60 mb-1 mt-3 px-2 text-xs font-semibold uppercase tracking-wider">
+        Layout
+      </h3>
+      <div className="space-y-0.5">
+        {LAYOUT_FIELD_TYPES.map((item) => (
           <PaletteItem key={item.type} {...item} />
         ))}
       </div>

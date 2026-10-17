@@ -3,6 +3,7 @@ import ExampleBlock from './_components/example-block';
 import { Code, H2 } from '../_components/doc';
 import ContactFormDemo from './_components/demos/contact-form-demo';
 import ConditionalDemo from './_components/demos/conditional-demo';
+import MultiPageDemo from './_components/demos/multi-page-demo';
 import LocaleDemo from './_components/demos/locale-demo';
 import ValidationDemo from './_components/demos/validation-demo';
 import BuilderDemo from './_components/demos/builder-demo';
@@ -107,6 +108,46 @@ const CONDITIONAL_CODE = `const schema: FormSchema = {
     },
   ],
 };`;
+
+const MULTI_PAGE_CODE = `const schema: FormSchema = {
+  id: 'consultation',
+  title: 'Book a Consultation',
+  submitLabel: 'Book',
+  settings: { showProgressBar: true },
+  fields: [
+    { id: 'name',  type: 'text',  label: 'Full Name',     required: true, order: 0 },
+    { id: 'email', type: 'email', label: 'Email Address', required: true, order: 1 },
+
+    // Starts page 2. Its label and description become the page title and subtitle.
+    {
+      id: 'page-visit',
+      type: 'pagebreak',
+      label: 'Your Visit',
+      description: 'Tell us what the consultation is about.',
+      order: 2,
+    },
+    {
+      id: 'department',
+      type: 'select',
+      label: 'Department',
+      required: true,
+      order: 3,
+      options: [
+        { value: 'dermatology', label: 'Dermatology' },
+        { value: 'orthopedics', label: 'Orthopedics' },
+        { value: 'other',       label: 'Other' },
+      ],
+    },
+    { id: 'reason', type: 'textarea', label: 'Reason for Visit', order: 4 },
+
+    { id: 'page-confirm', type: 'pagebreak', label: 'Confirm', order: 5 },
+    { id: 'consent', type: 'checkbox', label: 'I agree to be contacted by email', order: 6 },
+  ],
+};
+
+// onSubmit fires once, from the last page, with flat data from every page:
+// { name, email, department, reason, consent }
+<FormRenderer schema={schema} locale="en-US" onSubmit={save} />`;
 
 const LOCALE_CODE = `'use client';
 
@@ -254,10 +295,11 @@ export default function BuilderPage() {
 }`;
 
 export default async function ExamplesPage() {
-  const [contactHtml, conditionalHtml, localeHtml, validationHtml, builderHtml] = await Promise.all(
+  const [contactHtml, conditionalHtml, multiPageHtml, localeHtml, validationHtml, builderHtml] = await Promise.all(
     [
       highlight(CONTACT_FORM_CODE),
       highlight(CONDITIONAL_CODE),
+      highlight(MULTI_PAGE_CODE),
       highlight(LOCALE_CODE),
       highlight(VALIDATION_CODE),
       highlight(BUILDER_CODE),
@@ -299,6 +341,18 @@ export default async function ExamplesPage() {
         </p>
         <ExampleBlock codeHtml={conditionalHtml}>
           <ConditionalDemo />
+        </ExampleBlock>
+      </section>
+
+      {/* Multi-page Form */}
+      <section>
+        <H2 id="multi-page-form">Multi-page Form</H2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+          Each <Code>pagebreak</Code> field starts a new page. Next validates the current page only, Back keeps
+          what was typed, and <Code>onSubmit</Code> receives flat data from every page.
+        </p>
+        <ExampleBlock codeHtml={multiPageHtml}>
+          <MultiPageDemo />
         </ExampleBlock>
       </section>
 

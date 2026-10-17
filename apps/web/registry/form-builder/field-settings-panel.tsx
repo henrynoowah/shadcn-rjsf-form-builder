@@ -1,6 +1,6 @@
 import { useFormBuilder } from './builder-context';
 import type { LocalizedString, FormFieldOption, FormFieldCondition, FormFieldConditionOperator } from '@/lib/form-builder-types/types';
-import { FormFieldType, isDisplayField } from '@/lib/form-builder-types/types';
+import { FormFieldType, isDisplayField, isPageBreak } from '@/lib/form-builder-types/types';
 import { localizeText } from '@/lib/form-builder-types/i18n';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -242,6 +242,9 @@ const ConditionEditor = ({
 export const FieldSettingsPanel = ({ locale, baseLocale, availableLocales }: FieldSettingsPanelProps) => {
   const { selectedField, updateField, state, updateSchema } = useFormBuilder();
   const { schema } = state;
+  const hasPages = schema.fields.some((f) => isPageBreak(f.type));
+  const updateSettings = (patch: Partial<NonNullable<typeof schema.settings>>) =>
+    updateSchema({ settings: { ...schema.settings, ...patch } });
 
   const formMetaSection = (
     <div className="border-sidebar-border border-t pt-4 space-y-4">
@@ -276,6 +279,40 @@ export const FieldSettingsPanel = ({ locale, baseLocale, availableLocales }: Fie
           placeholder="Submit"
         />
       </div>
+      {hasPages && (
+        <>
+          <div>
+            <label className="mb-1 block text-xs font-medium">Next Button Label</label>
+            <LocalizedInput
+              value={schema.settings?.nextLabel}
+              locale={locale}
+              availableLocales={availableLocales}
+              onChange={(nextLabel) => updateSettings({ nextLabel })}
+              placeholder="Next"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium">Back Button Label</label>
+            <LocalizedInput
+              value={schema.settings?.backLabel}
+              locale={locale}
+              availableLocales={availableLocales}
+              onChange={(backLabel) => updateSettings({ backLabel })}
+              placeholder="Back"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="form-progress-bar"
+              checked={schema.settings?.showProgressBar ?? false}
+              onCheckedChange={(checked) => updateSettings({ showProgressBar: checked === true })}
+            />
+            <label htmlFor="form-progress-bar" className="text-sm">
+              Show progress bar
+            </label>
+          </div>
+        </>
+      )}
     </div>
   );
 
@@ -317,13 +354,14 @@ export const FieldSettingsPanel = ({ locale, baseLocale, availableLocales }: Fie
 
       <div>
         <label className="mb-1 block text-xs font-medium">
-          {selectedField.type === FormFieldType.PARAGRAPH ? 'Text' : 'Label'}
+          {selectedField.type === FormFieldType.PARAGRAPH ? 'Text' : isPageBreak(selectedField.type) ? 'Page Title' : 'Label'}
         </label>
         <LocalizedInput
           value={selectedField.label}
           locale={locale}
           availableLocales={availableLocales}
           onChange={(label) => updateField(selectedField.id, { label })}
+          placeholder={isPageBreak(selectedField.type) ? 'Defaults to the form title' : undefined}
         />
       </div>
 
@@ -350,7 +388,7 @@ export const FieldSettingsPanel = ({ locale, baseLocale, availableLocales }: Fie
         </div>
       )}
 
-      {selectedField.type === FormFieldType.HEADING && (
+      {(selectedField.type === FormFieldType.HEADING || isPageBreak(selectedField.type)) && (
         <div>
           <label className="mb-1 block text-xs font-medium">Description</label>
           <LocalizedInput

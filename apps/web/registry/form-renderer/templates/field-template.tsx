@@ -13,6 +13,9 @@ export const FieldTemplate = (props: FieldTemplateProps) => {
     );
   }
 
+  // Objects render their own title and description in ObjectFieldTemplate.
+  const showDescription = description && schema.type !== 'object';
+
   return (
     <div className="mb-4">
       {displayLabel && label && (
@@ -22,7 +25,7 @@ export const FieldTemplate = (props: FieldTemplateProps) => {
         </label>
       )}
       {children}
-      {description && <div className="text-muted-foreground mt-1 text-xs">{description}</div>}
+      {showDescription && <div className="text-muted-foreground mt-1 text-xs">{description}</div>}
       {errors && <div className="text-destructive mt-1 text-xs">{errors}</div>}
     </div>
   );

@@ -37,7 +37,10 @@ export default function PlaygroundPage() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground xl:h-dvh">
-      <SiteHeader badge="playground" links={[{ href: '/docs', label: 'Docs' }]} fullWidth />
+      <SiteHeader badge="playground" links={[
+          { href: '/docs', label: 'Docs' },
+          { href: '/examples', label: 'Examples' },
+        ]} fullWidth />
 
       {/* Toolbar: theme preset + locale drive both panes */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-2">
@@ -50,7 +53,7 @@ export default function PlaygroundPage() {
                 key={l}
                 onClick={() => setLocale(l)}
                 aria-pressed={locale === l}
-                className={`rounded px-2.5 py-1 font-mono text-xs font-medium transition-colors ${
+                className={`flex h-7 items-center rounded-md px-2.5 font-mono text-xs font-medium transition-colors ${
                   locale === l
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-muted-foreground hover:bg-muted/80'

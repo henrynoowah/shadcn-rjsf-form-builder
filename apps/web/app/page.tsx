@@ -84,6 +84,7 @@ export default async function Home() {
         badge="registry"
         links={[
           { href: '/docs', label: 'Docs' },
+          { href: '/examples', label: 'Examples' },
           { href: '/playground', label: 'Playground' },
         ]}
       />

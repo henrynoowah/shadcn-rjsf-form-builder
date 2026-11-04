@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Menu01Icon } from '@hugeicons/core-free-icons';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -16,6 +17,14 @@ const GITHUB_SVG = (
 
 type NavLink = { href: string; label: string };
 
+// The mobile menu lists every page and marks the current one; the desktop bar only shows `links`.
+const SITE_LINKS: NavLink[] = [
+  { href: '/', label: 'Home' },
+  { href: '/docs', label: 'Docs' },
+  { href: '/examples', label: 'Examples' },
+  { href: '/playground', label: 'Playground' },
+];
+
 export default function SiteHeader({
   badge,
   links,
@@ -27,6 +36,7 @@ export default function SiteHeader({
   fullWidth?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/80 px-6 py-4 backdrop-blur">
@@ -72,28 +82,47 @@ export default function SiteHeader({
             >
               <HugeiconsIcon icon={Menu01Icon} strokeWidth={2} className="size-4" />
             </SheetTrigger>
-            <SheetContent side="right">
+            <SheetContent side="right" className="gap-0 p-0">
               <SheetTitle>Site navigation</SheetTitle>
-              <div className="mt-6 flex flex-col gap-4">
-                {links.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setOpen(false)}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                <ThemeToggle />
+              <div className="flex h-15 items-center gap-3 border-b border-border px-6">
+                <span className="font-mono text-sm font-semibold tracking-tight">shadcn-rjsf</span>
+                <span className="rounded-full border border-border px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+                  {badge}
+                </span>
+              </div>
+
+              <nav className="flex flex-col px-3 py-3">
+                {SITE_LINKS.map((link) => {
+                  const active = pathname === link.href || (link.href !== '/' && pathname.startsWith(`${link.href}/`));
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      aria-current={active ? 'page' : undefined}
+                      className={`rounded-md px-3 py-3 text-base transition-colors ${
+                        active ? 'bg-muted font-medium text-foreground' : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              <div className="mt-auto border-t border-border px-6 py-4">
+                <div className="flex items-center justify-between py-2 text-sm text-muted-foreground">
+                  Appearance
+                  <ThemeToggle />
+                </div>
                 <a
                   href={GITHUB_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  className="flex items-center justify-between py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  {GITHUB_SVG}
                   GitHub
+                  {GITHUB_SVG}
                 </a>
               </div>
             </SheetContent>

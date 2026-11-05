@@ -27,8 +27,8 @@ const FIELD_LINES = [
 // Swatches from theme-preset-switcher.tsx; null = the page's own --primary.
 const ACCENTS = [
   { name: 'default', color: null },
+  { name: 'slate', color: 'oklch(0.546 0.245 262.881)' },
   { name: 'terminal', color: 'oklch(0.6 0.2 145)' },
-  { name: 'playful', color: 'oklch(0.7 0.19 330)' },
 ] as const;
 
 type Step = { fields: number; locale: Locale; accent: number; hidden?: boolean; ms: number };

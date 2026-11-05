@@ -82,7 +82,10 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SiteHeader badge="docs" links={[{ href: '/playground', label: 'Playground' }]} />
+      <SiteHeader badge="docs" links={[
+          { href: '/examples', label: 'Examples' },
+          { href: '/playground', label: 'Playground' },
+        ]} />
 
       <div className="mx-auto flex max-w-5xl flex-col gap-8 px-6 py-6 md:flex-row md:gap-10 md:py-10">
         {/* Mobile: one scrollable row of pages */}

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { codeToHtml } from 'shiki';
 import ExampleBlock from './_components/example-block';
 import { Code, H2 } from '../_components/doc';
@@ -312,7 +313,11 @@ export default async function ExamplesPage() {
       <div>
         <h1 className="mb-3 text-2xl font-bold tracking-tight">Examples</h1>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Copy-paste examples covering the most common patterns.
+          Copy-paste examples covering the most common patterns. Looking for complete forms? See the{' '}
+          <Link href="/examples" className="font-medium text-foreground underline underline-offset-4">
+            showcase
+          </Link>
+          .
         </p>
       </div>
 
